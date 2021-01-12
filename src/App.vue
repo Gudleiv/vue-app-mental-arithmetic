@@ -1,19 +1,22 @@
 <template>
   <div id="app">
-    <b-navbar toggleable="md" type="dark">
-      <b-navbar-brand to="/"> {{ name.toUpperCase() }} </b-navbar-brand>
+    <b-navbar toggleable="sm" type="dark" variant="dark" >
+      <b-navbar-brand to="/" @click="toHome"> {{ name.toUpperCase() }} </b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <b-nav-item to="/">Тренажер</b-nav-item>
-          <b-nav-item to="/about">Умножения</b-nav-item>
+          <b-nav-item to="/training">Тренажер</b-nav-item>
+          <b-nav-item to="/multiplication">Умножения</b-nav-item>
         </b-navbar-nav>
          <b-navbar-nav class="ml-auto">
-           <b-nav-item to="/sign">Вход</b-nav-item>
+           <li class="nav-link"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
+           <li class="nav-link"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
          </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <router-view />
+    <div class="container" id="main">
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -24,6 +27,11 @@ export default {
       name: 'Abacus MA',
     }
   },
+  methods: {
+    toHome() {
+      this.$router.go()
+    }
+  }
 }
 </script>
 
@@ -37,4 +45,10 @@ export default {
 nav {
   background-color: #29772b;
 }
+
+
+body {
+  overflow-y: scroll;
+}
+
 </style>
