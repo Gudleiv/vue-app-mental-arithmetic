@@ -115,10 +115,16 @@ export default {
         const user = {
           email: this.email,
           password: this.password,
-          name: this.name,
-          type: this.type
+          //name: this.name,
+          //type: this.type
         }
-        console.log(user);
+        this.$store.dispatch('registerUser', user)
+          .then(() => {
+            //this.$router.push('/')
+          })
+          .catch(() => {})
+      } else {
+        this.$v.$touch()
       }
     },
     validateState(name) {
@@ -133,4 +139,5 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>

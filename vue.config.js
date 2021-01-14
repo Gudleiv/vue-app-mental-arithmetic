@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    host: ""
+  },
   chainWebpack: config => {
     config
       .plugin('html')

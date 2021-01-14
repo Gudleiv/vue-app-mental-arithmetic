@@ -22,18 +22,22 @@
           required
         ></b-form-input>
       </b-form-group>
-    
-        <div class="row justify-content-end">
-          <div class="col mt-2 pl-3">
-            <a class="text-secondary" href="#">Забыли пароль?</a>
-          </div>
-          <div class="col-auto">
-            <b-button
-            type="submit"
-            variant="primary"
-            >Войти</b-button
-            >
-          </div>
+
+      <div class="row justify-content-end">
+        <div class="col mt-2 pl-3">
+          <a class="text-secondary" href="#">Забыли пароль?</a>
+        </div>
+        <div class="col-auto">
+          <b-overlay
+            :show="loading"
+            rounded="sm"
+            opacity="0.6"
+            spinner-small
+            spinner-variant="primary"
+            class="d-inline-block"
+          ><b-button type="submit" variant="primary" :disabled="loading">Войти</b-button>
+          </b-overlay>
+        </div>
       </div>
     </b-form>
   </b-card>
@@ -43,21 +47,34 @@
 import { required, email } from 'vuelidate/lib/validators'
 
 export default {
+  created() {
+    if (this.$route.query.required) {
+      this.$store.dispatch('loginRequired', this.requiredMessage)
+    }
+  },
   data() {
     return {
       email: '',
       password: '',
-
+      requiredMessage: 'Войдите для просмотра этой страницы'
+    }
+  },
+  computed: {
+    loading() {
+      return this.$store.getters.loading
+    },
+    error() {
+      return this.$store.getters.error
     }
   },
   validations: {
     email: {
       required,
-      email
+      email,
     },
     password: {
-      required
-    }
+      required,
+    },
   },
   methods: {
     onSubmit() {
@@ -66,14 +83,24 @@ export default {
           email: this.email,
           password: this.password,
         }
-        console.log(user);
+        this.$store
+          .dispatch('loginUser', user)
+          .then(() => {
+            this.$router.push('/')
+          })
+          .catch(() => {})
+      } else {
+        this.$v.touch()
       }
     },
     validateState(name) {
       const { $dirty, $error } = this.$v[name]
       return $dirty ? !$error : null
     },
-  }
+    showError() {
+
+    }
+  },
 }
 </script>
 
