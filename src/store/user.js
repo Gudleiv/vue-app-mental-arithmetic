@@ -1,14 +1,15 @@
 import firebase from '@/firebase'
 
 class User {
-  constructor(id) {
+  constructor(id, name) {
     this.id = id
+    this.name = name
   }
 }
 
 export default {
   state: {
-    user: null
+    user: undefined
   },
   mutations: {
     setUser(state, payload) {
@@ -25,36 +26,41 @@ export default {
 
       try {
         const { user } = await firebase.auth().signInWithEmailAndPassword(email, password)
-        commit('setUser', new User(user.uid))
+        commit('setUser', new User(user.uid, user.displayName))
         commit('setLoading', false)
       } catch (error) {
-        console.log(error)
         commit('setLoading', false)
         commit('setError', error.message)
         throw error
       }
     },
-    async registerUser ({commit}, { email, password }) {
+    async registerUser ({commit}, { email, password, name }) {
       commit('clearError')
       commit('setLoading', true)
 
       try {
         const { user } = await firebase.auth().createUserWithEmailAndPassword(email, password)
-        commit('setUser', new User(user.uid))
+        await user.updateProfile({
+          displayName: name
+        })
+        commit('setUser', new User(user.uid, user.displayName))
         commit('setLoading', false)
       } catch (error) {
-        console.log(error)
         commit('setLoading', false)
         commit('setError', error.message)
         throw error
       }
     },
     logoutUser({commit}) {
-      firebase.auth().signOut()
-      commit('clearUser')
+      firebase.auth().signOut().then(() => {
+        commit('clearUser')
+      })
     },
     autoLoginUser({commit}, user) {
       commit('setUser', new User(user.uid))
+    },
+    prepareLogin({commit}) {
+      commit('setUser', null)
     },
     loginRequired({commit}, message) {
       commit('clearError')
@@ -66,7 +72,7 @@ export default {
       return state.user
     },
     isUserLoggedIn (state) {
-      return state.user !== null
+      return state.user != null
     }
   }
 }

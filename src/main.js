@@ -18,6 +18,8 @@ new Vue({
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.$store.dispatch('autoLoginUser', user)
+      } else {
+        this.$store.dispatch('prepareLogin')
       }
     })
   }

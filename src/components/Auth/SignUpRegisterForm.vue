@@ -115,7 +115,7 @@ export default {
         const user = {
           email: this.email,
           password: this.password,
-          //name: this.name,
+          name: this.name,
           //type: this.type
         }
         this.$store.dispatch('registerUser', user)

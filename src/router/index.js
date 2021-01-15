@@ -19,16 +19,16 @@ const routes = [
     path: '/auth/signin',
     name: 'SignIn',
     component: SignIn,
-    meta: {
-      requiresNoAuth: true
+    beforeEnter(to, from, next) {
+      skipForUsers(next)
     }
   },
   {
     path: '/auth/signup',
     name: 'SignUp',
     component: SignUp,
-    meta: {
-      requiresNoAuth: true
+    beforeEnter(to, from, next) {
+      skipForUsers(next)
     }
   },
   {
@@ -57,13 +57,29 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-//
-router.beforeEach(async (to, from, next) => {
-  const requiresNoAuth = to.matched.some(record => record.meta.requiresNoAuth)
-  if (requiresNoAuth && store.getters.user !== null) {
-    next({ name: 'Home' });
+async function skipForUsers(next) {
+  const user = await getUserState()
+  if (user !== null) {
+    next({ name: 'Home' })
   } else {
-    next();
+    next()
   }
-})
+}
+
+function getUserState () {
+  return new Promise((resolve, reject) => {
+    if (store.state.user.user === undefined) {
+      const unwatch = store.watch(
+        () => store.state.user.user,
+        (value) => {
+          unwatch()
+          resolve(value)
+        }
+      )
+    } else {
+      resolve(store.state.user.user)
+    }
+  })
+}
+
 export default router;

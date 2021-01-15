@@ -8,8 +8,10 @@
         <b-nav-item to="/multiplication">Умножения</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <li class="nav-link appear" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
-        <li class="nav-link appear" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
+        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">{{ userDisplayName }}</b-nav-item>
+        </li>
+        <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
+        <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
         <li class="nav-link" v-if="isUserLoggedIn"><b-button variant="outline-light" @click="logout">Выход</b-button></li>
       </b-navbar-nav>
     </b-collapse>
@@ -29,13 +31,21 @@ export default {
       this.$route.path !== '/' ? this.$router.push('/') : this.$router.go();
     },
     logout() {
-      this.$store.dispatch('logoutUser')
-      this.toHome()
+      this.$store.dispatch('logoutUser').then(() => {
+        this.toHome()
+      })
     }
   },
   computed: {
     isUserLoggedIn() {
       return this.$store.getters.isUserLoggedIn
+    },
+    userDisplayName() {
+      if (this.isUserLoggedIn && this.$store.getters.user.name) {
+        return this.$store.getters.user.name
+      } else {
+        return 'Профиль'
+      }
     }
   }
 }
