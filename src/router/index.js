@@ -5,6 +5,7 @@ import firebase from '@/firebase'
 import Home from '@/components/Home'
 import SignIn from '@/components/Auth/SignIn'
 import SignUp from '@/components/Auth/SignUp'
+import Profile from '@/components/Profile/Profile'
 import Abacus from '@/components/Trainer/Abacus'
 
 Vue.use(VueRouter);
@@ -29,6 +30,14 @@ const routes = [
     component: SignUp,
     beforeEnter(to, from, next) {
       skipForUsers(next)
+    }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: {
+      requiresAuth: true
     }
   },
   {

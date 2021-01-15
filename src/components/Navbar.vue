@@ -8,7 +8,7 @@
         <b-nav-item to="/multiplication">Умножения</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">{{ userDisplayName }}</b-nav-item>
+        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">Профиль</b-nav-item>
         </li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
