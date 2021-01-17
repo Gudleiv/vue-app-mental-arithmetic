@@ -2,7 +2,7 @@
   <div>
     <b-input-group class="form">
       <template #prepend>
-        <b-input-group-text>Имя</b-input-group-text>
+        <b-input-group-text><b-icon icon="person-lines-fill"></b-icon></b-input-group-text>
       </template>
       <b-form-input
           :disabled="name.formDisabled"
@@ -12,15 +12,16 @@
           @blur="$v.name.value.$touch()"
       ></b-form-input>
       <b-input-group-append>
-        <b-button variant="outline-secondary" v-show="!name.formDisabled" @click="editName">X</b-button>
-        <b-button variant="outline-primary" v-show="name.formDisabled" @click="editName">Изменить</b-button>
-        <b-button variant="outline-success" v-show="!name.formDisabled" @click="changeName">Сохранить</b-button>
+        <b-button variant="outline-primary" v-if="name.formDisabled" @click="editName"><b-icon font-scale="0.99" icon="pencil-fill"></b-icon></b-button>
+        <b-button variant="outline-success" v-if="!name.formDisabled" @click="changeName"><b-icon font-scale="0.99" icon="check2"></b-icon> Сохранить</b-button>
+        <b-button variant="outline-secondary" v-if="!name.formDisabled" @click="editName"><b-icon font-scale="0.99" icon="x-circle"></b-icon></b-button>
       </b-input-group-append>
     </b-input-group>
 
     <b-input-group class="form">
       <template #prepend>
-        <b-input-group-text>Email</b-input-group-text>
+
+        <b-input-group-text><b-icon icon="envelope"></b-icon></b-input-group-text>
       </template>
       <b-form-input
           :disabled="email.formDisabled"
@@ -30,15 +31,15 @@
           type="email"
       ></b-form-input>
       <b-input-group-append>
-        <b-button variant="outline-secondary" v-show="!email.formDisabled" @click="editEmail">X</b-button>
-        <b-button variant="outline-primary" v-show="email.formDisabled" @click="editEmail">Изменить</b-button>
-        <b-button variant="outline-success" v-show="!email.formDisabled" @click="changeEmail">Сохранить</b-button>
+        <b-button variant="outline-primary" v-if="email.formDisabled" @click="editEmail"><b-icon font-scale="0.99" icon="pencil-fill"></b-icon></b-button>
+        <b-button variant="outline-success" v-if="!email.formDisabled" @click="changeEmail"><b-icon font-scale="0.99" icon="check2"></b-icon> Сохранить</b-button>
+        <b-button variant="outline-secondary" v-if="!email.formDisabled" @click="editEmail"><b-icon font-scale="0.99" icon="x-circle"></b-icon></b-button>
       </b-input-group-append>
     </b-input-group>
 
     <b-input-group class="form">
       <template #prepend>
-        <b-input-group-text>Пароль</b-input-group-text>
+        <b-input-group-text><b-icon icon="key"></b-icon></b-input-group-text>
       </template>
       <b-form-input
           :disabled="password.formDisabled"
@@ -55,9 +56,9 @@
           @blur="$v.password.confirmValue.$touch()"
       ></b-form-input>
       <b-input-group-append>
-        <b-button variant="outline-secondary" v-show="!password.formDisabled" @click="editPassword">X</b-button>
-        <b-button variant="outline-primary" id="tooltip-target-1" v-show="password.formDisabled" @click="editPassword">Новый пароль</b-button>
-        <b-button variant="outline-success" v-show="!password.formDisabled" @click="changePassword">Сохранить</b-button>
+        <b-button variant="outline-primary" v-if="password.formDisabled" @click="editPassword"><b-icon font-scale="0.99" icon="pencil-fill"></b-icon></b-button>
+        <b-button variant="outline-success" v-if="!password.formDisabled" @click="changePassword"><b-icon font-scale="0.99" icon="check2"></b-icon> Сохранить</b-button>
+        <b-button variant="outline-secondary" v-if="!password.formDisabled" @click="editPassword"><b-icon font-scale="0.99" icon="x-circle"></b-icon></b-button>
       </b-input-group-append>
     </b-input-group>
   </div>
@@ -109,6 +110,11 @@ export default {
       this.$v.password.$reset()
     },
     changeName() {
+      // TODO: trim name
+      if (this.name.value === this.nameInitValue) {
+        this.editName()
+        return
+      }
       if (!this.$v.name.$invalid) {
         const name = this.name.value
         this.$store.dispatch('updateUserInfo', { name })
@@ -122,6 +128,10 @@ export default {
       }
     },
     changeEmail() {
+      if (this.email.value === this.emailInitValue) {
+        this.editEmail()
+        return
+      }
       if (!this.$v.email.$invalid) {
         const email = this.email.value
         this.$store.dispatch('updateEmail', { email })
@@ -188,7 +198,7 @@ export default {
   margin-bottom: 1rem;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 310px) {
   .form {
     align-items: flex-end;
     flex-direction: column;

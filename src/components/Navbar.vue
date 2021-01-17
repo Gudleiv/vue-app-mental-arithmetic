@@ -12,7 +12,7 @@
         </li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
-        <li class="nav-link" v-if="isUserLoggedIn"><b-button variant="outline-light" @click="logout">Выход</b-button></li>
+        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item @click="logout">Выход</b-nav-item></li>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>

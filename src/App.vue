@@ -27,9 +27,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
-nav {
-  background-color: #29772b;
-}
 
 body {
   overflow-y: scroll;

@@ -3,8 +3,8 @@
     <div class="row">
       <div class="col-md-2">
         <div class="text-center">
-          <b-avatar variant="primary" text="Г" size="5rem" class="mt-3"></b-avatar>
-          <div class="mx-auto mt-4 font-weight-bold">{{ userDisplayName }}</div>
+          <b-avatar variant="primary" text="Г" size="5rem" class="mt-4"></b-avatar>
+          <div class="mx-auto mt-3 font-weight-bold">{{ userDisplayName }}</div>
         </div>
       </div>
       <div class="col-md-10 mt-4">
