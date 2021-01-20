@@ -65,6 +65,8 @@
 </template>
 
 <script>
+// TODO: Переписать на InputControls кнопки сохранить и отмена
+
 import { required, email, minLength, maxLength, alpha, sameAs } from 'vuelidate/lib/validators'
 
 export default {

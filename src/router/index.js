@@ -7,6 +7,10 @@ import SignIn from '@/components/Auth/SignIn'
 import SignUp from '@/components/Auth/SignUp'
 import Profile from '@/components/Profile/Profile'
 import Abacus from '@/components/Trainer/Abacus'
+import AbacusGame from '@/components/Trainer/AbacusGame'
+import AbacusColumnGame from '@/components/Trainer/AbacusColumnGame'
+import AbacusExercises from '@/components/Trainer/AbacusExercises'
+import AbacusExercisesEditor from '@/components/Trainer/AbacusExercisesEditor'
 
 Vue.use(VueRouter);
 
@@ -41,12 +45,38 @@ const routes = [
     }
   },
   {
-    path: '/train/abacus',
+    redirect: '/abacus/',
+    path: '/abacus',
     name: 'Abacus',
     component: Abacus,
     meta: {
       requiresAuth: true
-    }
+    },
+    children: [
+      {
+        path: '',
+        name: 'AbacusGame',
+        component: AbacusGame,
+      },
+      {
+        path: 'column',
+        name: 'AbacusColumnGame',
+        component: AbacusColumnGame
+      },
+      {
+        path: 'exercises',
+        name: 'AbacusExercises',
+        component: AbacusExercises,
+        children: [
+          {
+            path: ':id',
+            name: 'AbacusExercisesEditor',
+            component: AbacusExercisesEditor,
+            props: true,
+          }
+        ]
+      },
+    ]
   },
 ];
 

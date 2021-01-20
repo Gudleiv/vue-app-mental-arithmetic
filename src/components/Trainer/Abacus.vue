@@ -1,30 +1,23 @@
 <template>
   <div class="mt-4">
-    <b-card no-body>
-      <b-tabs card pills>
-        <b-tab title="Форсаж" active>
-          <b-card-text></b-card-text>
-        </b-tab>
-        <b-tab title="Столбики">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Atque neque quasi similique?
-        </b-tab>
-        <b-tab disabled title-item-class="abacus__tabspacer">
-        </b-tab>
-        <b-tab title="Мои примеры">
-          <abacus-exercises></abacus-exercises>
-        </b-tab>
-      </b-tabs>
+    <b-card>
+      <template #header>
+        <b-nav card-header tabs>
+          <b-nav-item exact-active-class="active" :to="{ name: 'AbacusGame'}">Форсаж</b-nav-item>
+          <b-nav-item active-class="active" :to="{ name: 'AbacusColumnGame'}">Столбики</b-nav-item>
+          <b-nav-item active-class="active" :to="{ name: 'AbacusExercises'}">Мои примеры</b-nav-item>
+        </b-nav>
+      </template>
+      <router-view></router-view>
     </b-card>
   </div>
 </template>
 
 <script>
-import AbacusExercises from './AbacusExercises'
 
 export default {
   name: 'Abacus.vue',
   components: {
-    AbacusExercises
   },
 }
 </script>
