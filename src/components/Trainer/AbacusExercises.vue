@@ -1,8 +1,8 @@
 <template>
     <b-row>
-      <b-col cols="4" class="px-0">
-        <b-navbar>
-          <b-nav pills vertical>
+      <b-col cols="4" class="px-4">
+        <b-navbar class="px-0">
+          <b-nav pills vertical style="width:100%">
             <b-nav-item
                 v-for="cat in categories"
 
@@ -10,14 +10,23 @@
                 :to="{name: 'AbacusExercisesEditor', params: {id: cat.id}}"
                 link-classes="categories-list"
             >{{ cat.name }}</b-nav-item>
+
           </b-nav>
         </b-navbar>
+        <div class="text-center">
+          <b-button
+              pill
+              style="padding:0;width:24px;height:24px"
+              variant="outline-primary"
+              @click="addCategory"
+          ><b-icon icon="plus"></b-icon> </b-button>
+        </div>
       </b-col>
 
       <b-col cols="8">
         <transition  name="component-fade" mode="out-in">
         <router-view :key="$route.fullPath"></router-view>
-          </transition>
+        </transition>
       </b-col>
     </b-row>
 </template>
@@ -32,6 +41,11 @@ export default {
   data() {
     return {
 
+    }
+  },
+  methods: {
+    addCategory() {
+      this.$store.dispatch('addCategory', 'Новая категория')
     }
   },
   computed: {

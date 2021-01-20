@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-2">
     <div v-if="exercises.length">
       <b-input-group
           v-for="ex in exercises"

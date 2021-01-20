@@ -18,28 +18,16 @@ class Category {
   addExercise(data) {
     this.exercises.push(data)
   }
-
 }
 
 export default {
   state: {
-    categories: [
-      {
-        id: '1',
-        name: 'Cat 1',
-        exercises: []
-      },
-      {
-        id: '2',
-        name: 'Category 2',
-        exercises: [
-          new Exercise('101', '10,-5,13,12', true),
-          new Exercise('103', '1,-1,3,4,-2', false)
-        ]
-      }
-    ]
+    categories: []
   },
   mutations: {
+    addCategory(state, name) {
+      state.categories.push(new Category(Date.now(), name))
+    },
     addExercise(state, { catId, data }) {
       const category = state.categories.find(cat => cat.id === catId)
       category.exercises.push(new Exercise(Date.now(), data))
@@ -56,6 +44,9 @@ export default {
     }
   },
   actions: {
+    addCategory({commit}, payload) {
+      commit('addCategory', payload)
+    },
     addExercise({commit}, payload) {
       commit('addExercise', payload)
     },
@@ -68,6 +59,7 @@ export default {
   },
   getters: {
     categories(state) {
+      if (!state.categories.length) return null
       return state.categories.map(c => ({id: c.id, name: c.name}))
     },
     exercises(state) {
