@@ -22,11 +22,25 @@ class Category {
 
 export default {
   state: {
-    categories: []
+    categories: [
+      {
+        id: '1',
+        name: 'Тестовая категория',
+        exercises: []
+      }
+    ]
   },
   mutations: {
     addCategory(state, name) {
       state.categories.push(new Category(Date.now(), name))
+    },
+    editCategory(state, {id, name}) {
+      const category = state.categories.find(c => c.id === id)
+      category.name = name
+    },
+    deleteCategory(state, id) {
+      const catId = state.categories.findIndex(c => c.id === id)
+      state.categories.splice(catId, 1)
     },
     addExercise(state, { catId, data }) {
       const category = state.categories.find(cat => cat.id === catId)
@@ -47,6 +61,12 @@ export default {
     addCategory({commit}, payload) {
       commit('addCategory', payload)
     },
+    editCategory({commit}, payload) {
+      commit('editCategory', payload)
+    },
+    deleteCategory({commit}, payload) {
+      commit('deleteCategory', payload)
+    },
     addExercise({commit}, payload) {
       commit('addExercise', payload)
     },
@@ -59,12 +79,21 @@ export default {
   },
   getters: {
     categories(state) {
+      if (!state.categories.length) return []
+      return state.categories.map(c => ({id: c.id, name: c.name}))
+    },
+    category(state, getters) {
+      return id => {
+        if (!getters.categories.length) return null
+        return getters.categories.find(c => c.id === id)
+      }
       if (!state.categories.length) return null
       return state.categories.map(c => ({id: c.id, name: c.name}))
     },
     exercises(state) {
       return exId => {
         const category = state.categories.find(cat => cat.id === exId)
+        if (!category) return null
         return category.exercises
       }
     }

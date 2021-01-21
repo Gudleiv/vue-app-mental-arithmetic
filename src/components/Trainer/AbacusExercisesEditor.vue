@@ -36,7 +36,6 @@
       </b-button>
     </div>
 
-
   </div>
 </template>
 
@@ -49,7 +48,12 @@ export default {
   created() {
     this.validate = validateState(this.$v)
   },
-  props: ['id'],
+  props: {
+    id: {
+      type: [String, Number],
+      required: true
+    }
+  },
   components: {
     InputControl,
   },
@@ -72,7 +76,7 @@ export default {
       this.addToggle = false
     },
     addExercise() {
-      if (this.newExercise && !this.$v.newExercise.invalid) {
+      if (this.newExercise && !this.$v.newExercise.$invalid) {
         this.$store.dispatch('addExercise', {
           catId: this.id,
           data: this.newExercise

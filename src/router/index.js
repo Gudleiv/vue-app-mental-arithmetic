@@ -67,14 +67,6 @@ const routes = [
         path: 'exercises',
         name: 'AbacusExercises',
         component: AbacusExercises,
-        children: [
-          {
-            path: ':id',
-            name: 'AbacusExercisesEditor',
-            component: AbacusExercisesEditor,
-            props: true,
-          }
-        ]
       },
     ]
   },
