@@ -1,24 +1,16 @@
-# teacher-platform-frontend
+# Vue Mental Arithmetic
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Development setup
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Build project
 ```
 npm run build
 ```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
