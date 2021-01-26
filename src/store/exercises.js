@@ -26,7 +26,9 @@ export default {
       {
         id: '1',
         name: 'Тестовая категория',
-        exercises: []
+        exercises: [
+          new Exercise(Date.now(), '1,-1,3')
+        ]
       }
     ]
   },
@@ -46,10 +48,15 @@ export default {
       const category = state.categories.find(cat => cat.id === catId)
       category.exercises.push(new Exercise(Date.now(), data))
     },
-    switchExercise(state, { catId, id, status }) {
+    switchExercise(state, { id, catId, status }) {
       const category = state.categories.find(cat => cat.id === catId)
       const exercise = category.exercises.find(ex => ex.id === id)
       exercise.enabled = status
+    },
+    updateExercise(state, {id, catId, data}) {
+      const category = state.categories.find(cat => cat.id === catId)
+      const exercise = category.exercises.find(ex => ex.id === id)
+      exercise.data = data
     },
     deleteExercise(state, { catId, id }) {
       const category = state.categories.find(cat => cat.id === catId)
@@ -70,25 +77,31 @@ export default {
     addExercise({commit}, payload) {
       commit('addExercise', payload)
     },
-    toggleExercise({commit}, payload) {
+    switchExercise({commit}, payload) {
       commit('switchExercise', payload)
+    },
+    updateExercise({commit}, payload) {
+      commit('updateExercise', payload)
     },
     deleteExercise({commit}, payload) {
       commit('deleteExercise', payload)
     }
   },
   getters: {
-    categories(state) {
+    categoriesList(state) {
       if (!state.categories.length) return []
       return state.categories.map(c => ({id: c.id, name: c.name}))
+    },
+    categories(state) {
+      if (!state.categories.length) return []
+      return state.categories
     },
     category(state, getters) {
       return id => {
         if (!getters.categories.length) return null
-        return getters.categories.find(c => c.id === id)
+        const cat = getters.categories.find(c => c.id === id)
+        return cat
       }
-      if (!state.categories.length) return null
-      return state.categories.map(c => ({id: c.id, name: c.name}))
     },
     exercises(state) {
       return exId => {

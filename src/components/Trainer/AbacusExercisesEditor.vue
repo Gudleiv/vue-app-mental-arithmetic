@@ -1,41 +1,36 @@
 <template>
   <div class="mt-2">
     <div v-if="exercises.length">
-      <b-input-group
+      <abacus-exercises-item
           v-for="ex in exercises"
-          class="exercises-list"
-      >
-        <b-input-group-prepend is-text>
-          <b-form-checkbox :checked="ex.enabled" @change="toggleExercise(ex.id, $event)" switch class="mr-n2">
-          </b-form-checkbox>
-        </b-input-group-prepend>
-        <b-form-input
-            :value="ex.data"
-            disabled
-        ></b-form-input>
-        <b-input-group-append>
-          <b-button variant="outline-danger" @click="deleteExercise(ex.id)"><b-icon icon="x-circle"></b-icon></b-button>
-        </b-input-group-append>
-      </b-input-group>
+          :key="ex.id"
+          :exercise="ex"
+          @toggle="switchExercise(ex.id, $event)"
+          @update="updateExercise(ex.id, $event)"
+          @del="deleteExercise(ex.id)"
+      ></abacus-exercises-item>
     </div>
     <div v-else>
       <div class="text-center mb-3 h5">В данной категории нет упражнений</div>
     </div>
     <input-control
-        v-if="addToggle"
+        v-if="addForm"
+        :key="catId"
         autocomplete="off"
-        v-model="$v.newExercise.$model"
+        ref="newExercise"
+        v-model.lazy="$v.newExercise.$model"
         @blur="$v.newExercise.$touch"
-        @cancel="cancelExercise"
+        @cancel="hideAddForm"
         @save="addExercise"
+        @keydown.esc="hideAddForm"
+        @keydown.enter="addExercise"
         :state="validate('newExercise')"
     />
     <div v-else class="text-center">
-      <b-button variant="success" @click="addToggle = !addToggle">
-        <b-icon icon="plus-circle"></b-icon> Добавить
+      <b-button size="sm" variant="outline-success" @click="showAddForm">
+        <b-icon icon="plus" style="height:15px" scale="1.5"></b-icon> Добавить пример
       </b-button>
     </div>
-
   </div>
 </template>
 
@@ -43,78 +38,126 @@
 import { required } from 'vuelidate/lib/validators'
 import { validateState } from '@/utils'
 import InputControl from '@/components/Controls/InputControl'
+import AbacusExercisesItem from './AbacusExercisesItem'
 
 export default {
   created() {
     this.validate = validateState(this.$v)
   },
   props: {
-    id: {
+    catId: {
       type: [String, Number],
       required: true
     }
   },
   components: {
     InputControl,
+    AbacusExercisesItem,
   },
   data() {
     return {
-      addToggle: false,
+      addForm: false,
       newExercise: '',
+      currentExercise: '',
+      exList: []
     }
   },
   validations: {
     newExercise: {
       required,
-      numeric: (val) => /^[0-9,-]*$/iu.test(val),
-    },
+      numeric: (val) => /^([-]?[\d]+[,]?)+$/.test(val),
+    }
   },
   methods: {
-    cancelExercise() {
+    hideAddForm() {
+      this.addForm = false
       this.newExercise = ''
       this.$v.newExercise.$reset()
-      this.addToggle = false
+    },
+    showAddForm() {
+      this.addForm = true
+      this.newExercise = ''
+      this.$v.newExercise.$reset()
+      this.$nextTick(() => this.$refs['newExercise'].focus())
     },
     addExercise() {
       if (this.newExercise && !this.$v.newExercise.$invalid) {
         this.$store.dispatch('addExercise', {
-          catId: this.id,
+          catId: this.catId,
           data: this.newExercise
         })
-
-        this.cancelExercise()
+        this.hideAddForm()
       } else {
         this.$v.newExercise.$touch()
       }
-
     },
-    toggleExercise(exerciseId, event) {
-      this.$store.dispatch('toggleExercise', {
-        catId: this.id,
-        id: exerciseId,
+    updateExercise(id, event) {
+      this.$store.dispatch('updateExercise', {
+        id,
+        catId: this.catId,
+        data: event
+      })
+    },
+    switchExercise(id, event) {
+      this.$store.dispatch('switchExercise', {
+        id,
+        catId: this.catId,
         status: event
       })
     },
-    deleteExercise(exerciseId) {
-      this.$store.dispatch('deleteExercise', {
-        catId: this.id,
-        id: exerciseId
+    deleteExercise(id) {
+      this.confirmModal().then(confirm => {
+        if (confirm) {
+          this.$store.dispatch('deleteExercise', {
+            id,
+            catId: this.catId
+          })
+        }
       })
     },
-    onChangeExercise(value) {
-      console.log(value)
+    showModal() {
+      this.$refs['exercises-modal'].show()
+      this.newName = this.currentCategory.name
     },
+    shownModal() {
+      this.$refs['exercises-formula-input'].focus()
+    },
+    hideModal() {
+      this.$refs['exercises-modal'].hide()
+      this.newName = ''
+    },
+    confirmModal() {
+      return this.$bvModal.msgBoxConfirm(`Вы действительно хотите удалить упражнение?`, {
+        title: `Удаление упражнения`,
+        size: 'md',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'OK',
+        cancelTitle: 'Cancel',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+          .then(value => {
+            return value
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    }
   },
   computed: {
     exercises() {
-      return this.$store.getters.exercises(this.id)
+      return this.$store.getters.exercises(this.catId)
     },
   },
+  watch: {
+    catId() {
+      this.hideAddForm()
+    }
+  }
 }
 </script>
 
 <style>
-.input-group.exercises-list {
-  margin-bottom: 0.4rem;
-}
 </style>

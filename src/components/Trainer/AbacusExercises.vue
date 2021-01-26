@@ -3,7 +3,7 @@
       <b-col cols="4" class="px-4">
         <b-navbar class="px-0">
           <b-nav pills vertical style="width:100%">
-            <div v-for="c in categories">
+            <div v-for="c in categories" :key="c.id">
               <b-nav-item
                   :active="catId === c.id"
                   active-class="active"
@@ -29,7 +29,7 @@
 
       <b-col cols="8">
         <transition  name="component-fade" mode="out-in">
-          <abacus-exercises-editor v-if="catId" :id="catId"/>
+          <abacus-exercises-editor v-if="catId" :catId="catId"/>
         </transition>
       </b-col>
 
@@ -42,17 +42,18 @@
             @hidden="hideModal"
             @ok="editCategory"
         >
-          <form ref="form" @submit.stop.prevent="editCategory">
+          <form @submit.stop.prevent="editCategory">
             <b-form-group
                 label="Название категории"
-                label-for="name-input"
-                invalid-feedback="Error message"
+                label-for="category-name-input"
+                invalid-feedback="Введите название категории"
                 :state="validate('newName')"
             >
               <b-form-input
-                  ref="focusInput"
-                  id="name-input"
-                  v-model="newName"
+                  :placeholder="defaultNewName"
+                  ref="category-name-input"
+                  id="category-name-input"
+                  v-model="$v.newName.$model"
                   :state="validate('newName')"
                   required
               ></b-form-input>
@@ -67,11 +68,11 @@
                   </b-button>
                 </div>
                 <div class="col text-right px-0">
-                  <b-button class="mr-1" variant="success" @click="ok()">
-                    OK
-                  </b-button>
-                  <b-button variant="outline-secondary" @click="cancel()">
+                  <b-button class="mr-1" variant="outline-secondary" @click="cancel()">
                     Cancel
+                  </b-button>
+                  <b-button variant="success" @click="!$v.newName.$invalid ? ok() : $v.newName.$touch()">
+                    OK
                   </b-button>
                 </div>
               </div>
@@ -96,17 +97,21 @@ export default {
   data() {
     return {
       catId: null,
-      newName: ''
+      newName: '',
+      defaultNewName: 'Новая категория'
     }
   },
   methods: {
     addCategory() {
-      this.$store.dispatch('addCategory', 'Новая категория')
+      this.$store.dispatch('addCategory', this.defaultNewName)
       const lastId = this.categories[this.categories.length - 1].id
       this.catId = lastId
       this.showModal()
     },
     editCategory() {
+      if (!this.newName.trim()) {
+        this.newName = this.defaultNewName
+      }
       const newData = {
         id: this.catId,
         name: this.newName
@@ -115,25 +120,53 @@ export default {
       this.hideModal()
     },
     deleteCategory() {
-      this.$store.dispatch('deleteCategory', this.catId)
-      this.catId = null
-      this.hideModal()
+      const del = () => {
+        this.$store.dispatch('deleteCategory', this.catId)
+        this.catId = null
+        this.hideModal()
+      }
+      if (this.currentCategory.exercises.length === 0) del()
+      else {
+        this.confirmModal().then(confirm => {
+          if (confirm) del()
+        })
+      }
     },
     showModal() {
       this.$refs['category-modal'].show()
       this.newName = this.currentCategory.name
     },
     shownModal() {
-      this.$refs.focusInput.focus()
+      this.$refs['category-name-input'].focus()
+      this.$refs['category-name-input'].select()
     },
     hideModal() {
       this.$refs['category-modal'].hide()
       this.newName = ''
+    },
+    confirmModal() {
+      return this.$bvModal.msgBoxConfirm(`Упражнения (${this.currentCategory.exercises.length}) из данной категории будут также удалены`, {
+        title: `Удаление категории "${this.currentCategory.name}"`,
+        size: 'md',
+        buttonSize: 'sm',
+        okVariant: 'danger',
+        okTitle: 'OK',
+        cancelTitle: 'Cancel',
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+        centered: true
+      })
+          .then(value => {
+            return value
+          })
+          .catch(err => {
+            // An error occurred
+          })
     }
   },
   computed: {
     categories() {
-      return this.$store.getters.categories
+      return this.$store.getters.categoriesList
     },
     currentCategory() {
       return this.$store.getters.category(this.catId)

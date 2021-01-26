@@ -4,7 +4,9 @@
         @update="$emit('update', $event)"
         @input="$emit('input', $event)"
         @blur="$emit('blur', $event)"
+        v-on="$listeners"
         v-bind="$attrs"
+        ref="input"
         :value="value"
         :state="state"
         type="text"
@@ -40,6 +42,9 @@ export default {
     },
     onCancel() {
       this.$emit('cancel')
+    },
+    focus() {
+      this.$refs.input.focus()
     }
   },
 }
