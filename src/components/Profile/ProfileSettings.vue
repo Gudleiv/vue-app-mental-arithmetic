@@ -112,7 +112,7 @@ export default {
       this.$v.password.$reset()
     },
     changeName() {
-      // TODO: trim name
+      this.name.value = this.name.value.trim()
       if (this.name.value === this.nameInitValue) {
         this.editName()
         return
@@ -130,6 +130,7 @@ export default {
       }
     },
     changeEmail() {
+      this.email.value.trim()
       if (this.email.value === this.emailInitValue) {
         this.editEmail()
         return
