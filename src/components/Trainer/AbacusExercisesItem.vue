@@ -34,6 +34,7 @@
 import InputControlButtons from '@/components/Controls/InputControlButtons'
 import { required } from 'vuelidate/lib/validators'
 import { validateState } from '@/utils'
+import exercises from '@/store/exercises'
 
 export default {
   name: 'AbacusExercisesItem',
@@ -41,7 +42,7 @@ export default {
     this.validate = validateState(this.$v)
   },
   props: {
-    exercise: Object,
+    exercise: Object
    },
   components: {
     InputControlButtons
@@ -54,7 +55,7 @@ export default {
   },
   methods: {
     toggle(event) {
-      this.$emit('switch', event)
+      this.$emit('toggle', event)
     },
     save() {
       if (!this.$v.input.$invalid) {

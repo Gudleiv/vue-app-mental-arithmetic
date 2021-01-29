@@ -1,15 +1,16 @@
-import firebase from '@/firebase'
+import fb from '@/firebase/database'
+import Vue from 'vue'
 
 class Exercise {
-  constructor(id, data, enabled = true) {
+  constructor(exercise, id = null, enabled = true) {
     this.id = id
-    this.data = data
+    this.data = exercise
     this.enabled = enabled
   }
 }
 
 class Category {
-  constructor(id, name) {
+  constructor(name, id = null) {
     this.id = id
     this.name = name
     this.exercises = []
@@ -22,21 +23,20 @@ class Category {
 
 export default {
   state: {
-    categories: [
-      {
-        id: '1',
-        name: 'Тестовая категория',
-        exercises: [
-          new Exercise(Date.now(), '1,-1,3')
-        ]
-      }
-    ]
+    categories: [],
   },
   mutations: {
-    addCategory(state, name) {
-      state.categories.push(new Category(Date.now(), name))
+    setCategories(state, categories) {
+      state.categories = categories
     },
-    editCategory(state, {id, name}) {
+    addCategory(state, category) {
+      state.categories.push(category)
+    },
+    editCategory(
+      state, {
+        id,
+        name,
+      }) {
       const category = state.categories.find(c => c.id === id)
       category.name = name
     },
@@ -44,53 +44,146 @@ export default {
       const catId = state.categories.findIndex(c => c.id === id)
       state.categories.splice(catId, 1)
     },
-    addExercise(state, { catId, data }) {
+    addExercise(state, {
+      catId,
+      exercise,
+    }) {
       const category = state.categories.find(cat => cat.id === catId)
-      category.exercises.push(new Exercise(Date.now(), data))
+      category.exercises.push(exercise)
     },
-    switchExercise(state, { id, catId, status }) {
+    switchExercise(
+      state, {
+        id,
+        catId,
+        enabled,
+      }) {
       const category = state.categories.find(cat => cat.id === catId)
       const exercise = category.exercises.find(ex => ex.id === id)
-      exercise.enabled = status
+      exercise.enabled = enabled
     },
-    updateExercise(state, {id, catId, data}) {
+    updateExercise(state, { catId, exercise }) {
       const category = state.categories.find(cat => cat.id === catId)
-      const exercise = category.exercises.find(ex => ex.id === id)
-      exercise.data = data
+      const currentExercise = category.exercises.find(ex => ex.id === exercise.id)
+      if (exercise.hasOwnProperty('data')) currentExercise.data = exercise.data
+      if (exercise.hasOwnProperty('enabled')) currentExercise.enabled = exercise.enabled
     },
-    deleteExercise(state, { catId, id }) {
+    deleteExercise(
+      state, {
+        catId,
+        id,
+      }) {
       const category = state.categories.find(cat => cat.id === catId)
       const exercise = category.exercises.findIndex(ex => ex.id === id)
       category.exercises.splice(exercise, 1)
-    }
+    },
   },
   actions: {
-    addCategory({commit}, payload) {
-      commit('addCategory', payload)
+    async fetchCategories({ commit }) {
+      const categories = await fb.getCategories()
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
+      const result = []
+      Object.keys(categories)
+        .forEach(key => {
+          const c = categories[key]
+          const category = new Category(c.name, key)
+          if (c.exercises) {
+            Object.keys(c.exercises)
+              .forEach(eKey => {
+                const e = c.exercises[eKey]
+                const exercise = new Exercise(e.data, eKey, e.enabled)
+                category.addExercise(exercise)
+              })
+          }
+          result.push(category)
+        })
+      commit('setCategories', result)
     },
-    editCategory({commit}, payload) {
-      commit('editCategory', payload)
+
+    addCategory({ commit }, payload) {
+      commit('clearError')
+      const category = new Category(payload)
+      fb.addCategory(category)
+        .then(key => {
+          category.id = key
+          commit('addCategory', category)
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
     },
-    deleteCategory({commit}, payload) {
-      commit('deleteCategory', payload)
+
+    editCategory({ commit }, payload) {
+      commit('clearError')
+      fb.updateCategory(payload.id, payload.name)
+        .then(() => {
+          commit('editCategory', payload)
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
     },
-    addExercise({commit}, payload) {
-      commit('addExercise', payload)
+    deleteCategory({ commit }, payload) {
+      commit('clearError')
+      fb.removeCategory(payload)
+        .then(() => {
+          commit('deleteCategory', payload)
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
     },
-    switchExercise({commit}, payload) {
-      commit('switchExercise', payload)
+    addExercise({ commit }, {catId, data}) {
+      commit('clearError')
+      const exercise = new Exercise(data)
+      fb.addExercise(catId, exercise)
+        .then(key => {
+          exercise.id = key
+          commit('addExercise', {
+            catId,
+            exercise,
+          })
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
     },
-    updateExercise({commit}, payload) {
-      commit('updateExercise', payload)
+    updateExercise({ commit }, { catId, exercise }) {
+      commit('clearError')
+      fb.updateExercise(catId, exercise)
+        .then(() => {
+          commit('updateExercise', { catId, exercise })
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
     },
-    deleteExercise({commit}, payload) {
-      commit('deleteExercise', payload)
-    }
+    deleteExercise({ commit }, { catId, id }) {
+      commit('clearError')
+      fb.removeExercise(catId, id)
+        .then(() => {
+          commit('deleteExercise', { catId, id })
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
+    },
   },
   getters: {
     categoriesList(state) {
       if (!state.categories.length) return []
-      return state.categories.map(c => ({id: c.id, name: c.name}))
+      return state.categories.map(c => ({
+        id: c.id,
+        name: c.name,
+      }))
     },
     categories(state) {
       if (!state.categories.length) return []
@@ -106,9 +199,9 @@ export default {
     exercises(state) {
       return exId => {
         const category = state.categories.find(cat => cat.id === exId)
-        if (!category) return null
+        if (!category.exercises) return []
         return category.exercises
       }
-    }
-  }
+    },
+  },
 }

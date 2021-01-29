@@ -10,7 +10,7 @@
                   @click="catId = c.id"
                   link-classes="categories-list"
               >{{ c.name }}
-                <button @click="showModal" v-show="catId === c.id" class="categories-item-edit"><b-icon icon="pencil"></b-icon></button>
+                <button @click="onClickEditCategory" v-show="catId === c.id" class="categories-item-edit"><b-icon icon="pencil"></b-icon></button>
               </b-nav-item>
             </div>
 
@@ -21,7 +21,7 @@
               pill
               style="padding:0;width:24px;height:24px"
               variant="outline-primary"
-              @click="addCategory"
+              @click="onClickNewCategory"
           ><b-icon icon="plus"></b-icon></b-button>
           <p class="my-2" v-if="!categories.length">Добавьте первую категорию</p>
         </div>
@@ -40,13 +40,13 @@
             @show="showModal"
             @shown="shownModal"
             @hidden="hideModal"
-            @ok="editCategory"
+            @ok="okModal"
         >
-          <form @submit.stop.prevent="editCategory">
+          <form @submit.stop.prevent="okModal">
             <b-form-group
                 label="Название категории"
                 label-for="category-name-input"
-                invalid-feedback="Введите название категории"
+                invalid-feedback="Введите название категории, не более 40 символов"
                 :state="validate('newName')"
             >
               <b-form-input
@@ -63,7 +63,7 @@
             <div class="container">
               <div class="row">
                 <div class="col px-0">
-                  <b-button variant="outline-danger" @click="deleteCategory">
+                  <b-button variant="outline-danger" v-if="!isANewCategory" @click="deleteCategory">
                     Delete
                   </b-button>
                 </div>
@@ -85,11 +85,12 @@
 <script>
 import AbacusExercisesEditor from './AbacusExercisesEditor'
 import { validateState } from '@/utils'
-import { required } from 'vuelidate/lib/validators'
+import { required, maxLength } from 'vuelidate/lib/validators'
 
 export default {
   created() {
     this.validate = validateState(this.$v)
+    this.$store.dispatch('fetchCategories')
   },
   components: {
     AbacusExercisesEditor
@@ -98,15 +99,13 @@ export default {
     return {
       catId: null,
       newName: '',
+      isANewCategory: false,
       defaultNewName: 'Новая категория'
     }
   },
   methods: {
     addCategory() {
-      this.$store.dispatch('addCategory', this.defaultNewName)
-      const lastId = this.categories[this.categories.length - 1].id
-      this.catId = lastId
-      this.showModal()
+      this.$store.dispatch('addCategory', this.newName)
     },
     editCategory() {
       if (!this.newName.trim()) {
@@ -117,7 +116,6 @@ export default {
         name: this.newName
       }
       this.$store.dispatch('editCategory', newData)
-      this.hideModal()
     },
     deleteCategory() {
       const del = () => {
@@ -132,9 +130,22 @@ export default {
         })
       }
     },
+    onClickNewCategory() {
+      this.isANewCategory = true
+      this.showModal()
+      this.newName = ''
+    },
+    onClickEditCategory() {
+      this.isANewCategory = false
+      this.showModal()
+      this.newName = this.currentCategory.name
+    },
+    okModal() {
+      this.isANewCategory ? this.addCategory() : this.editCategory()
+      this.hideModal()
+    },
     showModal() {
       this.$refs['category-modal'].show()
-      this.newName = this.currentCategory.name
     },
     shownModal() {
       this.$refs['category-name-input'].focus()
@@ -143,6 +154,7 @@ export default {
     hideModal() {
       this.$refs['category-modal'].hide()
       this.newName = ''
+      this.$v.newName.$reset()
     },
     confirmModal() {
       return this.$bvModal.msgBoxConfirm(`Упражнения (${this.currentCategory.exercises.length}) из данной категории будут также удалены`, {
@@ -160,7 +172,6 @@ export default {
             return value
           })
           .catch(err => {
-            // An error occurred
           })
     }
   },
@@ -175,6 +186,7 @@ export default {
   validations: {
       newName: {
         required,
+        maxLength: maxLength(40)
       }
   }
 }
@@ -185,6 +197,7 @@ export default {
   padding-top: 2px;
   padding-bottom: 2px;
   position: relative;
+  overflow-wrap: anywhere;
 }
 .categories-item-edit {
   position: absolute;

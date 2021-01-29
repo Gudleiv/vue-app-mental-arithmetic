@@ -93,16 +93,20 @@ export default {
     },
     updateExercise(id, event) {
       this.$store.dispatch('updateExercise', {
-        id,
         catId: this.catId,
-        data: event
+        exercise: {
+          id,
+          data: event
+        }
       })
     },
     switchExercise(id, event) {
-      this.$store.dispatch('switchExercise', {
-        id,
+      this.$store.dispatch('updateExercise', {
         catId: this.catId,
-        status: event
+        exercise: {
+          id,
+          enabled: event
+        }
       })
     },
     deleteExercise(id) {
