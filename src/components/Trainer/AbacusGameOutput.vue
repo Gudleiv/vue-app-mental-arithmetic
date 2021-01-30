@@ -1,24 +1,25 @@
 <template>
   <div class="col-lg-6 col-md-8 mx-auto">
     <svg
+        style="overflow:visible"
         v-show="gameOn"
-        viewBox="0 0 100 60">
+        viewBox="0 0 100 100">
+<!--      <line x1="46" y1="64" x2="53" y2="64" style="stroke:rgba(128,128,128,.3);stroke-width:1" />-->
+      <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1" />
       <text
           class="output-text"
-          x="50%"
+          x="43%"
           y="50%"
           text-anchor="end"
-          stroke-width="1px"
           dy=".3em"
       >{{ aboveZero ? '+' : '-'}}</text>
         <transition name="fade">
           <text
-              class="output-text"
+              class="output-text text"
               :key="numberKey"
-              x="50%"
+              x="43%"
               y="50%"
               text-anchor="start"
-              stroke-width="1px"
               dy=".3em"
           >{{ number }}</text>
       </transition>
@@ -96,8 +97,9 @@ export default {
 <style scoped>
 
 .output-text {
+  fill: #333;
   font-family: 'Nanum Gothic Coding', monospace;
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 
 .fade-enter-active {

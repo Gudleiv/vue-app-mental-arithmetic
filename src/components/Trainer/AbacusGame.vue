@@ -29,7 +29,7 @@ export default {
   },
   data() {
     return {
-      nums: [1,23,-42,-123,3]
+      nums: [123,234,-432,-123,321]
     }
   },
   methods: {

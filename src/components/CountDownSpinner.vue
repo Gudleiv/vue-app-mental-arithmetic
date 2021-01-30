@@ -1,6 +1,6 @@
 <template>
     <svg
-        viewBox="0 0 100 60"
+        viewBox="0 0 100 100"
     >
       <defs>
         <linearGradient id="test">
@@ -18,11 +18,11 @@
                     animationName: animationName
                   }"
           stroke="url(#test)"
-          stroke-width="3"
+          stroke-width="4"
           fill="transparent"
-          r="25"
+          r="40"
           cx="50"
-          cy="30"
+          cy="50"
       />
       <transition name="fade">
       <text
@@ -53,8 +53,9 @@ export default {
       showText: false,
       timeout: null,
       counter: this.counts,
-      length: 158, // best circumference of svg-circle
-      offset: 0
+      length: 252, // best circumference of svg-circle with r = 40
+      offset: 0,
+      delay: 1000
     }
   },
   computed: {
@@ -62,7 +63,7 @@ export default {
       return 'circleCountDown-' + this.counts
     },
     animationDuration() {
-      return this.counts * 1000 + 'ms'
+      return this.counts * this.delay + 'ms'
     },
     time() {
       return this.counts
@@ -108,8 +109,8 @@ export default {
     },
 
     countDown() {
-      const eachDelay = 1000
-      const lastDelay = 500
+      const eachDelay = this.delay
+      const lastDelay = eachDelay / 2
       return new Promise((resolve) => {
         const countDown = () => {
           clearTimeout(this.timeout)
@@ -135,8 +136,9 @@ export default {
 }
 
 .circle-text {
+  fill: #333;
   font-family: 'Nanum Gothic Coding', monospace;
-  font-size: 1.7rem;
+  font-size: 1.6rem;
 }
 
 .circle__animation {
@@ -158,29 +160,29 @@ export default {
 <style>
 @keyframes circleCountDown-2 {
   50% {
-    stroke-dashoffset: 77;
+    stroke-dashoffset: 126;
   }
   75% {
     opacity: 1;
   }
   100% {
-    stroke-dashoffset: 158;
+    stroke-dashoffset: 252;
     opacity: 0.1;
   }
 }
 
 @keyframes circleCountDown-3 {
   33% {
-    stroke-dashoffset: 52;
+    stroke-dashoffset: 84;
   }
   67% {
-    stroke-dashoffset: 106;
+    stroke-dashoffset: 168;
   }
   85% {
     opacity: 1;
   }
   100% {
-    stroke-dashoffset: 158;
+    stroke-dashoffset: 252;
     opacity: 0;
   }
 }
