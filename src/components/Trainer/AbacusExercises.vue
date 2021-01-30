@@ -1,6 +1,7 @@
 <template>
-    <b-row>
-      <b-col cols="4" class="px-4">
+  <div class="container">
+    <div class="row row-cols-md-2">
+      <div class="col-12 col-md-5 px-4">
         <b-navbar class="px-0">
           <b-nav pills vertical style="width:100%">
             <div v-for="c in categories" :key="c.id">
@@ -25,13 +26,13 @@
           ><b-icon icon="plus"></b-icon></b-button>
           <p class="my-2" v-if="!categories.length">Добавьте первую категорию</p>
         </div>
-      </b-col>
+      </div>
 
-      <b-col cols="8">
+      <div class="col-12 col-md-7">
         <transition  name="component-fade" mode="out-in">
           <abacus-exercises-editor v-if="catId" :catId="catId"/>
         </transition>
-      </b-col>
+      </div>
 
         <b-modal
             title="Категория"
@@ -79,7 +80,8 @@
             </div>
           </template>
         </b-modal>
-    </b-row>
+    </div>
+  </div>
 </template>
 
 <script>

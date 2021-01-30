@@ -1,11 +1,14 @@
 <template>
-  <b-navbar toggleable="sm" type="dark" variant="dark" >
+  <b-navbar toggleable="md" type="dark" class="navbar" variant="primary">
     <b-navbar-brand to="/"> {{ name.toUpperCase() }} </b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item :to="{name: 'Abacus'}">Тренажер</b-nav-item>
-        <b-nav-item to="/multiplication">Умножения</b-nav-item>
+<!--        <b-nav-item :to="{name: 'Abacus'}">Тренажер</b-nav-item>-->
+        <b-nav-item :to="{ name: 'AbacusGame'}">Форсаж</b-nav-item>
+        <b-nav-item :to="{ name: 'AbacusColumnGame'}">Столбики</b-nav-item>
+        <b-nav-item :to="{ name: 'AbacusExercises'}">Мои примеры</b-nav-item>
+        <b-nav-item disabled to="/multiplication">Умножения</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">Профиль</b-nav-item>
