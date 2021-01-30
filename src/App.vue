@@ -20,16 +20,10 @@ export default {
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-
-body {
-  overflow-y: scroll;
-}
-
+<style lang="scss">
+$primary: #165aac;
+$success: #187014;
+$danger: #861c1c;
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
 </style>
