@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="sm" type="dark" class="navbar" variant="primary">
+  <b-navbar toggleable="md" type="dark" class="navbar" variant="primary">
     <b-navbar-brand to="/"> {{ name.toUpperCase() }} </b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
