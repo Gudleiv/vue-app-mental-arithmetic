@@ -1,9 +1,6 @@
 <template>
   <div class="container">
     <div class="row">
-    <h2>Game</h2>
-    </div>
-    <div class="row">
       <div class="col">
         <b-button variant="primary" class="mr-1" @click="start">Start</b-button>
         <abacus-game-settings></abacus-game-settings>
