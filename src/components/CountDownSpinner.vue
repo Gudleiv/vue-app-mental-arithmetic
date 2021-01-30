@@ -1,8 +1,13 @@
 <template>
-  <div>
     <svg
         viewBox="0 0 100 60"
     >
+      <defs>
+        <linearGradient id="test">
+          <stop offset="0%" stop-color="#145A32"/>
+          <stop offset="100%" stop-color="#0E6655"/>
+        </linearGradient>
+      </defs>
       <circle
           v-if="show"
           ref="circle"
@@ -12,7 +17,7 @@
           :style="{ animationDuration: animationDuration,
                     animationName: animationName
                   }"
-          stroke="#542532"
+          stroke="url(#test)"
           stroke-width="3"
           fill="transparent"
           r="25"
@@ -28,27 +33,12 @@
           text-anchor="middle"
           stroke-width="1px"
           dy=".3em"
-      >{{counter}}</text>
-<!--      <text x="50%" y="50%" text-anchor="end" stroke-width="1px" dy=".3em">+</text>-->
-<!--      <text x="50%" y="50%" text-anchor="start" stroke-width="1px" dy=".3em">{{counter}}1</text>-->
+      >{{counter - 1}}</text>
       </transition>
     </svg>
-  </div>
 </template>
 
 <script>
-function findKeyframesRule(rule) {
-  const ss = document.styleSheets;
-  for (let i = 0; i < ss.length; ++i) {
-    for (let j = 0; j < ss[i].cssRules.length; ++j) {
-      if (ss[i].cssRules[j].name == rule) {
-        return ss[i].cssRules[j]
-      }
-    }
-  }
-  return null;
-}
-
 export default {
   name: 'CountDownSpinner',
   props: {
@@ -61,7 +51,7 @@ export default {
     return {
       show: false,
       showText: false,
-      interval: null,
+      timeout: null,
       counter: this.counts,
       length: 158, // best circumference of svg-circle
       offset: 0
@@ -80,43 +70,57 @@ export default {
   },
   methods: {
     start() {
-      this.show = true
-      this.showText = true
-
-      if (this.interval) return
-      const delay = 1000
-      this.interval = setInterval(() => {
-        if (this.counter > 1) {
-          this.counter--
-        } else {
-          this.showText = false
-        }
-      }, delay)
-      const intervalID = this.interval
-      setTimeout(() => {
-        if (this.interval === intervalID) {
-          this.stop()
-        }
-      }, delay * this.counts)
-    },
-    countDown() {
-      const delay = this.counter > 1 ? 1000 : 500
-      const timeout = setTimeout(() => {
-        this.counter--
-        if (this.counter > 1) this.countDown()
-      }, delay)
-    },
-    stop() {
-      clearInterval(this.interval)
-      this.interval = null
-      this.show = false
-      this.showText = false
-      this.counter = this.counts
-    },
-    restart() {
       this.stop()
       this.$nextTick(() => {
-        this.start()
+        this.init()
+      })
+    },
+
+    asyncStart() {
+      return new Promise((resolve) => {
+        this.stop()
+        this.$nextTick(() => {
+          this.show = true
+          this.showText = true
+          this.countDown().then(() => {
+            this.stop()
+            resolve()
+          })
+        })
+      })
+    },
+
+    stop() {
+      clearTimeout(this.timeout)
+      this.timeout = null
+      this.counter = this.counts
+      this.show = false
+      this.showText = false
+    },
+
+    init() {
+      this.show = true
+      this.showText = true
+      this.countDown().then(() => {
+        this.$emit('end')
+        this.stop()
+      })
+    },
+
+    countDown() {
+      const eachDelay = 1000
+      const lastDelay = 500
+      return new Promise((resolve) => {
+        const countDown = () => {
+          clearTimeout(this.timeout)
+          const delay = this.counter > 1 ? eachDelay : lastDelay
+          this.timeout = setTimeout(() => {
+            if (this.counter === 1) this.showText = false
+            this.counter--
+            this.counter >= 0 ? countDown() : resolve()
+          }, delay)
+        }
+        countDown()
       })
     }
   }
@@ -131,8 +135,8 @@ export default {
 }
 
 .circle-text {
-  font-family: monospace;
-  font-size: 1.5rem;
+  font-family: 'Nanum Gothic Coding', monospace;
+  font-size: 1.7rem;
 }
 
 .circle__animation {
@@ -140,17 +144,11 @@ export default {
   animation-fill-mode: forwards;
 }
 
-.fade-enter-active {
-  opacity: 1;
-  transition: all .2s ease;
-}
 .fade-leave-active {
   opacity: 1;
-  transition: all .2s ease-out;
+  transition: all .25s ease-out;
 }
-.fade-enter {
-  opacity: 0;
-}
+
 .fade-leave-to {
   opacity: 0;
 }
@@ -165,18 +163,9 @@ export default {
   75% {
     opacity: 1;
   }
-  92% {
-    stroke-dashoffset: 158;
-    transform: rotate(-90deg);
-    opacity: 0.2;
-  }
-  99% {
-    stroke-dashoffset: 0;
-    transform: rotate(-270deg);
-    opacity: 0;
-  }
   100% {
-    opacity: 0
+    stroke-dashoffset: 158;
+    opacity: 0.1;
   }
 }
 
@@ -186,20 +175,13 @@ export default {
   }
   67% {
     stroke-dashoffset: 106;
+  }
+  85% {
     opacity: 1;
   }
-  92% {
-    stroke-dashoffset: 158;
-    transform: rotate(-90deg);
-    opacity: 0.2;
-  }
-  99% {
-    stroke-dashoffset: 0;
-    transform: rotate(-270deg);
-    opacity: 0;
-  }
   100% {
-    opacity: 0
+    stroke-dashoffset: 158;
+    opacity: 0;
   }
 }
 
