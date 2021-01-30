@@ -55,4 +55,7 @@ export default {
 </script>
 
 <style scoped>
+.navbar {
+  padding: 0.1rem 1rem;
+}
 </style>
