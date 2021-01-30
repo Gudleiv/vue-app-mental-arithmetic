@@ -1,11 +1,12 @@
 <template>
   <div>
-    <b-button variant="primary" @click="start">Start</b-button>
-    <b-button variant="danger" @click="stop">Stop</b-button>
-    <b-button variant="secondary" @click="restart">Restart</b-button>
+
     <div class="mx-auto">
       <count-down-spinner ref="countdown"></count-down-spinner>
     </div>
+    <b-button variant="primary" @click="start">Start</b-button>
+    <b-button variant="danger" @click="stop">Stop</b-button>
+    <b-button variant="secondary" @click="restart">Restart</b-button>
   </div>
 </template>
 
