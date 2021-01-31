@@ -48,13 +48,7 @@
 
 <script>
 import CountDownSpinner from '@/components/CountDownSpinner'
-
-function playSound(num) {
-  num = num > 0 ? '+' + String(num) : String(num)
-  const sound = new Audio(`/sounds/ru/${num}.mp3`)
-  console.dir(sound)
-  sound.play()
-}
+import SoundNumbers from '@/services/sound'
 
 export default {
   name: 'AbacusGameOutput',
@@ -82,6 +76,7 @@ export default {
       numberKey: 0,
       aboveZero: true,
       delay: 2000,
+      sounds: null
     }
   },
   methods: {
@@ -91,7 +86,8 @@ export default {
       return new Promise((resolve) => {
         const next = () => {
           const num = array.shift()
-          playSound(num)
+          if (array.length) this.sounds.preLoadSound(array[0])
+          this.sounds.playSound(num, 0.5)
           this.aboveZero = num > 0
           this.number = Math.abs(num)
           this.numberKey++
@@ -106,15 +102,15 @@ export default {
     async start(startToBeginTime = 500) {
       this.clear()
       const cd = this.$refs.countdown
-      this.status.onGame = true
-      this.status.onCountDown = true
+      this.status.onGame = this.status.onCountDown = true
+      this.sounds = new SoundNumbers(this.numbers, 'ru')
       this.h.disableButtons = true
       this.status.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
       this.h.disableButtons = false
       this.status.onCountDown ? await cd.start() : cd.stop()
       this.status.onCountDown = false
       if (this.status.onGame) await this.drawGame()
-      this.clear()
+      this.cancel()
     },
     clear() {
       clearTimeout(this.h.timeout)
