@@ -2,7 +2,7 @@
   <div>
     <div class="d-flex">
       <div class="ml-auto">
-        <b-button :disabled="!gameOn" @click="restart" class="button-controls" size="sm" pill variant="outline-primary">
+        <b-button :disabled="h.disableButtons" @click="restart" class="button-controls" size="sm" pill variant="outline-primary">
           <b-icon icon="arrow-clockwise"></b-icon>
         </b-button>
         <b-button disabled class="button-controls" size="sm" pill variant="outline-primary">
@@ -15,7 +15,7 @@
     </div>
     <svg
         style="overflow:visible"
-        v-show="gameOn"
+        v-show="status.onGame && !status.onCountDown"
         viewBox="0 0 100 100">
       <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1"/>
       <text
@@ -39,7 +39,7 @@
       </transition>
     </svg>
     <count-down-spinner
-        v-show="!gameOn"
+        v-show="status.onCountDown"
         ref="countdown"
         :counts="3"
     ></count-down-spinner>
@@ -48,6 +48,13 @@
 
 <script>
 import CountDownSpinner from '@/components/CountDownSpinner'
+
+function playSound(num) {
+  num = num > 0 ? '+' + String(num) : String(num)
+  const sound = new Audio(`/sounds/ru/${num}.mp3`)
+  console.dir(sound)
+  sound.play()
+}
 
 export default {
   name: 'AbacusGameOutput',
@@ -63,27 +70,33 @@ export default {
   },
   data() {
     return {
+      status: {
+        onGame: false,
+        onCountDown: false,
+      },
+      h: {
+        timeout: null,
+        disableButtons: false,
+      },
       number: null,
-      aboveZero: true,
-      gameOn: false,
-      delay: 2000,
-      timeout: null,
       numberKey: 0,
+      aboveZero: true,
+      delay: 2000,
     }
   },
   methods: {
     drawGame() {
-      this.gameOn = true
       const array = [...this.numbers]
       const delay = this.delay
       return new Promise((resolve) => {
         const next = () => {
           const num = array.shift()
+          playSound(num)
           this.aboveZero = num > 0
           this.number = Math.abs(num)
           this.numberKey++
-          clearTimeout(this.timeout)
-          this.timeout = setTimeout(() => {
+          clearTimeout(this.h.timeout)
+          this.h.timeout = setTimeout(() => {
             array.length > 0 ? next() : resolve()
           }, delay)
         }
@@ -92,17 +105,25 @@ export default {
     },
     async start(startToBeginTime = 500) {
       this.clear()
-      await this.$refs.countdown.startToBegin(startToBeginTime)
-      await this.$refs.countdown.start()
-      await this.drawGame()
-      this.gameOn = false
-      this.$emit('end')
+      const cd = this.$refs.countdown
+      this.status.onGame = true
+      this.status.onCountDown = true
+      this.h.disableButtons = true
+      this.status.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
+      this.h.disableButtons = false
+      this.status.onCountDown ? await cd.start() : cd.stop()
+      this.status.onCountDown = false
+      if (this.status.onGame) await this.drawGame()
+      this.clear()
     },
     clear() {
-      this.gameOn = false
-      clearTimeout(this.timeout)
-      this.timeout = null
+      clearTimeout(this.h.timeout)
+      this.status.onGame = false
+      this.status.onCountDown = false
+      this.h.disableButtons = false
+      this.h.timeout = null
       this.number = null
+      this.numberKey = 0
     },
     cancel() {
       this.clear()

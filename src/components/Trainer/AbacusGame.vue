@@ -40,7 +40,7 @@ export default {
   },
   data() {
     return {
-      nums: [123, 234, -432, -123, 321],
+      nums: [1,-1,9,4,2],
       gameOn: false,
     }
   },
