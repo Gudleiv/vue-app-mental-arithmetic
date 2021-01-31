@@ -1,10 +1,16 @@
 <template>
   <div class="col-lg-6 col-md-8 mx-auto">
+    <div class="d-flex">
+      <div class="ml-auto">
+        <b-button :disabled="!gameOn" @click="restart" class="button-controls" size="sm" pill variant="outline-primary"><b-icon icon="arrow-clockwise"></b-icon></b-button>
+        <b-button disabled class="button-controls" size="sm" pill variant="outline-primary"><b-icon icon="volume-down"></b-icon></b-button>
+        <b-button @click="cancel" class="button-controls" size="sm" pill variant="outline-secondary"><b-icon icon="x"></b-icon></b-button>
+      </div>
+    </div>
     <svg
         style="overflow:visible"
         v-show="gameOn"
         viewBox="0 0 100 100">
-<!--      <line x1="46" y1="64" x2="53" y2="64" style="stroke:rgba(128,128,128,.3);stroke-width:1" />-->
       <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1" />
       <text
           class="output-text"
@@ -12,7 +18,7 @@
           y="50%"
           text-anchor="end"
           dy=".3em"
-      >{{ aboveZero ? '+' : '-'}}</text>
+      >{{ aboveZero ? '' : '-'}}</text>
         <transition name="fade">
           <text
               class="output-text text"
@@ -27,7 +33,7 @@
     <count-down-spinner
         v-show="!gameOn"
         ref="countdown"
-        :counts="2"
+        :counts="3"
     ></count-down-spinner>
   </div>
 </template>
@@ -78,23 +84,38 @@ export default {
         next()
       })
     },
-    async start() {
+    async start(startToBeginTime = 500) {
       this.clear()
-      await this.$refs.countdown.asyncStart()
+      await this.$refs.countdown.startToBegin(startToBeginTime)
+      await this.$refs.countdown.start()
       await this.drawGame()
       this.gameOn = false
+      this.$emit('end')
     },
     clear() {
       this.gameOn = false
       clearTimeout(this.timeout)
       this.timeout = null
       this.number = null
+    },
+    cancel() {
+      this.clear()
+      this.$emit('end')
+    },
+    async restart(){
+      await this.start(900)
     }
   }
 }
 </script>
 
 <style scoped>
+.button-controls {
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  margin-left: 8px;
+}
 
 .output-text {
   fill: #333;

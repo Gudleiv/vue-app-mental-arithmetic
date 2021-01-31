@@ -28,7 +28,7 @@
     />
     <div v-else class="text-center">
       <b-button size="sm" variant="outline-success" @click="showAddForm">
-        <b-icon icon="plus" style="height:15px" scale="1.5"></b-icon> Добавить пример
+        <b-icon icon="plus" style="height:16px" scale="1.5"></b-icon> Добавить пример
       </b-button>
     </div>
   </div>

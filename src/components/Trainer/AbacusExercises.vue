@@ -11,7 +11,7 @@
                   @click="catId = c.id"
                   link-classes="categories-list"
               >{{ c.name }}
-                <button @click="onClickEditCategory" v-show="catId === c.id" class="categories-item-edit"><b-icon icon="pencil"></b-icon></button>
+                <button @click="onClickEditCategory" v-show="catId === c.id" class="categories-item-edit"><b-icon scale="0.8" icon="pencil"></b-icon></button>
               </b-nav-item>
             </div>
 
@@ -20,7 +20,7 @@
         <div class="text-center">
           <b-button
               pill
-              style="padding:0;width:24px;height:24px"
+              style="padding:0;width:28px;height:28px"
               variant="outline-primary"
               @click="onClickNewCategory"
           ><b-icon icon="plus"></b-icon></b-button>

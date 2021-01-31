@@ -14,8 +14,8 @@
           :stroke-dasharray="length"
           :stroke-dashoffset="offset"
           class="circle__animation circle"
-          :style="{ animationDuration: animationDuration,
-                    animationName: animationName
+          :style="{ animationDuration,
+                    animationName,
                   }"
           stroke="url(#test)"
           stroke-width="4"
@@ -55,15 +55,27 @@ export default {
       counter: this.counts,
       length: 252, // best circumference of svg-circle with r = 40
       offset: 0,
-      delay: 1000
+      delay: 1000,
+      animationName: this.countsAnimationName,
+      animationDuration: this.countsAnimationDuration
     }
   },
   computed: {
-    animationName() {
-      return 'circleCountDown-' + this.counts
+    countsAnimationName: {
+      get: function () {
+        return 'circleCountDown-' + this.counts
+      },
+      set: function (newValue) {
+        this.animationName = newValue
+      },
     },
-    animationDuration() {
-      return this.counts * this.delay + 'ms'
+    countsAnimationDuration: {
+      get: function () {
+        return this.counts * this.delay + 'ms'
+      },
+      set: function (newValue) {
+        this.animationDuration = newValue + 'ms'
+      },
     },
     time() {
       return this.counts
@@ -71,16 +83,11 @@ export default {
   },
   methods: {
     start() {
-      this.stop()
-      this.$nextTick(() => {
-        this.init()
-      })
-    },
-
-    asyncStart() {
       return new Promise((resolve) => {
         this.stop()
         this.$nextTick(() => {
+          this.animationName = this.countsAnimationName
+          this.animationDuration = this.countsAnimationDuration
           this.show = true
           this.showText = true
           this.countDown().then(() => {
@@ -99,15 +106,6 @@ export default {
       this.showText = false
     },
 
-    init() {
-      this.show = true
-      this.showText = true
-      this.countDown().then(() => {
-        this.$emit('end')
-        this.stop()
-      })
-    },
-
     countDown() {
       const eachDelay = this.delay
       const lastDelay = eachDelay / 2
@@ -122,6 +120,21 @@ export default {
           }, delay)
         }
         countDown()
+      })
+    },
+
+    startToBegin(delay = 1000) {
+      return new Promise((resolve) => {
+        this.stop()
+        this.show = true
+        this.countsAnimationName = 'circleCountUp'
+        this.countsAnimationDuration = delay
+        setTimeout(() => {
+          resolve()
+          this.animationName = this.countsAnimationName
+          this.animationDuration = this.countsAnimationDuration
+          this.show = false
+        }, delay)
       })
     }
   }
@@ -148,16 +161,36 @@ export default {
 
 .fade-leave-active {
   opacity: 1;
-  transition: all .25s ease-out;
+  transition: all .2s ease-out;
 }
 
 .fade-leave-to {
   opacity: 0;
 }
 
+.fade-enter-active {
+  opacity: 1;
+  transition: all .2s ease-in;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
 </style>
 
 <style>
+
+@keyframes circleCountUp {
+  from {
+    stroke-dashoffset: 252;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @keyframes circleCountDown-2 {
   50% {
     stroke-dashoffset: 126;

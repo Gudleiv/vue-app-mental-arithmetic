@@ -2,12 +2,21 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <b-button variant="primary" class="mr-1" @click="start">Start</b-button>
-        <abacus-game-settings></abacus-game-settings>
+        <abacus-game-settings
+          v-show="!gameOn"
+        ></abacus-game-settings>
         <abacus-game-output
+            @end="finish"
+            v-show="gameOn"
             ref="output"
             :numbers="nums"
         ></abacus-game-output>
+        <b-button
+            v-show="!gameOn"
+            variant="primary"
+            class="mr-1"
+            @click="start"
+        >Старт</b-button>
       </div>
     </div>
   </div>
@@ -26,12 +35,17 @@ export default {
   },
   data() {
     return {
-      nums: [123,234,-432,-123,321]
+      nums: [123,234,-432,-123,321],
+      gameOn: false
     }
   },
   methods: {
     start() {
+      this.gameOn = true
       this.$refs.output.start()
+    },
+    finish() {
+      this.gameOn = false
     }
   },
 }
