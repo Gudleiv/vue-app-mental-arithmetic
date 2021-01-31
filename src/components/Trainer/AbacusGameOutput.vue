@@ -2,12 +2,20 @@
   <div>
     <div class="d-flex">
       <div class="ml-auto">
+        <transition name="fade">
+          <b-button v-show="status.onFinish" class="button-controls" style="padding:0 1rem;width:auto" size="sm" pill
+                    variant="primary">
+            <b-icon icon="grip-vertical"></b-icon> Столбиком
+          </b-button>
+        </transition>
+
         <b-button :disabled="h.disableButtons" @click="restart" class="button-controls" size="sm" pill
                   variant="outline-primary">
           <b-icon icon="arrow-clockwise"></b-icon>
         </b-button>
-        <b-button disabled class="button-controls" size="sm" pill variant="outline-primary">
-          <b-icon icon="volume-down"></b-icon>
+        <b-button @click="mute = !mute" class="button-controls" size="sm" pill
+                  :variant="mute ? 'outline-secondary' : 'primary'">
+          <b-icon :icon="mute ? 'volume-mute' : 'volume-up-fill'"></b-icon>
         </b-button>
         <b-button @click="end" class="button-controls" size="sm" pill variant="outline-danger">
           <b-icon icon="x"></b-icon>
@@ -95,6 +103,7 @@ export default {
       aboveZero: true,
       delay: 2000,
       sounds: null,
+      mute: false
     }
   },
   methods: {
@@ -105,7 +114,7 @@ export default {
         const next = () => {
           const num = array.shift()
           if (array.length) this.sounds.preLoadSound(array[0])
-          this.sounds.playSound(num, 0.5)
+          if (!this.mute) this.sounds.playSound(num, 0.7)
           this.aboveZero = num > 0
           this.number = Math.abs(num)
           this.numberKey++

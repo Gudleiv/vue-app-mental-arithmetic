@@ -75,7 +75,7 @@ export default {
 
 @keyframes rightAnswerFormAnimation {
   to {
-    background-color: green;
+    background-color: #49992b;
     color: white;
   }
 }
@@ -88,7 +88,7 @@ export default {
     transform: rotate(-3deg);
   }
   50% {
-    background-color: red;
+    background-color: #861c1c;
     color: white;
     transform: rotate(3deg);
   }
