@@ -1,10 +1,18 @@
 <template>
   <div class="container">
     <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-          <AbacusGameSettings
-              v-show="!gameOn"
-          />
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <AbacusGameOutput
+            @end="finish"
+            v-show="gameOn"
+            ref="output"
+            :numbers="nums"
+        />
+      </div>
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <AbacusGameSettings
+            v-show="!gameOn"
+        />
         <div class="d-flex justify-content-end">
           <b-button
               v-show="!gameOn"
@@ -15,15 +23,8 @@
           >Старт
           </b-button>
         </div>
-        </div>
-        <div class="col-lg-6 col-md-8 mx-auto">
-          <AbacusGameOutput
-              @end="finish"
-              v-show="gameOn"
-              ref="output"
-              :numbers="nums"
-          />
-        </div>
+      </div>
+
     </div>
   </div>
 </template>
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      nums: [3,1,-2,3],
+      nums: [1, 2],
       gameOn: false,
     }
   },

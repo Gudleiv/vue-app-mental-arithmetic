@@ -2,13 +2,14 @@
   <div>
     <div class="d-flex">
       <div class="ml-auto">
-        <b-button :disabled="h.disableButtons" @click="restart" class="button-controls" size="sm" pill variant="outline-primary">
+        <b-button :disabled="h.disableButtons" @click="restart" class="button-controls" size="sm" pill
+                  variant="outline-primary">
           <b-icon icon="arrow-clockwise"></b-icon>
         </b-button>
         <b-button disabled class="button-controls" size="sm" pill variant="outline-primary">
           <b-icon icon="volume-down"></b-icon>
         </b-button>
-        <b-button @click="cancel" class="button-controls" size="sm" pill variant="outline-danger">
+        <b-button @click="end" class="button-controls" size="sm" pill variant="outline-danger">
           <b-icon icon="x"></b-icon>
         </b-button>
       </div>
@@ -41,19 +42,34 @@
     <count-down-spinner
         v-show="status.onCountDown"
         ref="countdown"
-        :counts="3"
+        :counts="2"
     ></count-down-spinner>
+    <div style="height:300px" class="d-flex align-items-center justify-content-center" v-if="status.onFinish">
+      <div class="col-8">
+        <AnswerForm
+            :answer="answer"
+            @end="end"
+            ref="answer"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import CountDownSpinner from '@/components/CountDownSpinner'
+import AnswerForm from '@/components/Trainer/AnswerForm'
 import SoundNumbers from '@/services/sound'
+
+function calcAnswer(numbers) {
+  return numbers.reduce((acc, cv) => acc + cv, 0)
+}
 
 export default {
   name: 'AbacusGameOutput',
   components: {
     CountDownSpinner,
+    AnswerForm,
   },
   props: {
     numbers: {
@@ -67,16 +83,18 @@ export default {
       status: {
         onGame: false,
         onCountDown: false,
+        onFinish: false,
       },
       h: {
         timeout: null,
         disableButtons: false,
       },
+      answer: null,
       number: null,
       numberKey: 0,
       aboveZero: true,
       delay: 2000,
-      sounds: null
+      sounds: null,
     }
   },
   methods: {
@@ -103,6 +121,7 @@ export default {
       this.clear()
       const cd = this.$refs.countdown
       this.status.onGame = this.status.onCountDown = true
+      this.answer = calcAnswer(this.numbers)
       this.sounds = new SoundNumbers(this.numbers, 'ru')
       this.h.disableButtons = true
       this.status.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
@@ -110,18 +129,21 @@ export default {
       this.status.onCountDown ? await cd.start() : cd.stop()
       this.status.onCountDown = false
       if (this.status.onGame) await this.drawGame()
-      this.cancel()
+      this.clear()
+      this.status.onFinish = true
+      this.$nextTick(() => this.$refs.answer.focus())
     },
     clear() {
       clearTimeout(this.h.timeout)
       this.status.onGame = false
       this.status.onCountDown = false
+      this.status.onFinish = false
       this.h.disableButtons = false
       this.h.timeout = null
       this.number = null
       this.numberKey = 0
     },
-    cancel() {
+    end() {
       this.clear()
       this.$emit('end')
     },
