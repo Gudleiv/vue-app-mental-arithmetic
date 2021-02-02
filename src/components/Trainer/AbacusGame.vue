@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="d-flex">
-          <div class="ml-auto mb-3">
+          <div class="ml-auto mb-2">
             <AbacusGameControls />
           </div>
         </div>
@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      nums: [1, 2, 3, -40, 40],
+      nums: [1],
       gameOn: false,
     }
   },

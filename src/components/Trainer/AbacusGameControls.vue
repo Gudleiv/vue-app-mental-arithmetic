@@ -1,16 +1,10 @@
 <template>
-  <div>
-    <slot></slot>
-    <b-button class="button-controls" style="padding:0 1rem;width:auto" size="sm" pill
-              variant="primary">
-      <b-icon icon="grip-vertical"></b-icon>
-      Привет
-    </b-button>
+  <div class="abacus-game-controls">
+    <mini-button icon="grip-vertical" variant="primary">Столбиком</mini-button>
+    <mini-button icon="arrow-clockwise" variant="outline-primary"></mini-button>
+    <mini-button :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
+    <mini-button icon="x" variant="outline-danger"></mini-button>
 
-    <b-button @click="mute = !mute" class="button-controls" size="sm" pill
-              :variant="mute ? 'outline-secondary' : 'primary'">
-      <b-icon :icon="mute ? 'volume-mute' : 'volume-up-fill'"></b-icon>
-    </b-button>
   </div>
 </template>
 
@@ -18,13 +12,26 @@
 import MiniButton from '@/components/Controls/MiniButton'
 
 export default {
-  name: 'MiniButtonsControl',
+  name: 'AbacusGameControls',
   components: {
     MiniButton
+  },
+  data() {
+    return {
+      mute: true
+    }
   }
 }
 </script>
 
 <style scoped>
-
+.abacus-game-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.abacus-game-controls > button:not(:last-child) {
+  margin-bottom: 6px;
+  margin-right: 8px
+}
 </style>
