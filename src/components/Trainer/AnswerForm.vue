@@ -53,7 +53,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style type="scss" scoped>
 .input {
   text-align: center;
   height: 4.5rem;
