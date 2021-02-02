@@ -1,9 +1,9 @@
 <template>
   <div class="abacus-game-controls">
-    <mini-button icon="grip-vertical" variant="primary">Столбиком</mini-button>
-    <mini-button icon="arrow-clockwise" variant="outline-primary"></mini-button>
-    <mini-button :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
-    <mini-button icon="x" variant="outline-danger"></mini-button>
+    <mini-button v-if="status.onFinish" icon="grip-vertical" text="Столбиком" variant="primary"></mini-button>
+    <mini-button v-if="status.onGame" :disabled="status.onCountUp" icon="arrow-clockwise" variant="outline-primary"></mini-button>
+    <mini-button :icon="settings.muteSound ? 'volume-mute' : 'volume-up-fill'" :variant="settings.muteSound ? 'outline-secondary' : 'primary'"></mini-button>
+    <mini-button v-if="status.onGame" icon="x" variant="outline-danger"></mini-button>
 
   </div>
 </template>
@@ -16,9 +16,12 @@ export default {
   components: {
     MiniButton
   },
-  data() {
-    return {
-      mute: true
+  computed: {
+    status() {
+      return this.$store.getters.getGameStatus
+    },
+    settings() {
+      return this.$store.getters.getGameSettings
     }
   }
 }

@@ -1,27 +1,27 @@
 <template>
   <div class="col-lg-8 col-md-10 mx-auto">
-    <div class="d-flex">
-      <div class="ml-auto">
-        <transition name="fade">
-          <b-button v-show="status.onFinish" class="button-controls" style="padding:0 1rem;width:auto" size="sm" pill
-                    variant="primary">
-            <b-icon icon="grip-vertical"></b-icon> Столбиком
-          </b-button>
-        </transition>
+    <!--    <div class="d-flex">
+          <div class="ml-auto">
+            <transition name="fade">
+              <b-button v-show="status.onFinish" class="button-controls" style="padding:0 1rem;width:auto" size="sm" pill
+                        variant="primary">
+                <b-icon icon="grip-vertical"></b-icon> Столбиком
+              </b-button>
+            </transition>
 
-        <b-button :disabled="h.disableButtons" @click="restart" class="button-controls" size="sm" pill
-                  variant="outline-primary">
-          <b-icon icon="arrow-clockwise"></b-icon>
-        </b-button>
-        <b-button @click="mute = !mute" class="button-controls" size="sm" pill
-                  :variant="mute ? 'outline-secondary' : 'primary'">
-          <b-icon :icon="mute ? 'volume-mute' : 'volume-up-fill'"></b-icon>
-        </b-button>
-        <b-button @click="end" class="button-controls" size="sm" pill variant="outline-danger">
-          <b-icon icon="x"></b-icon>
-        </b-button>
-      </div>
-    </div>
+            <b-button :disabled="status.onCountUp" @click="restart" class="button-controls" size="sm" pill
+                      variant="outline-primary">
+              <b-icon icon="arrow-clockwise"></b-icon>
+            </b-button>
+            <b-button @click="mute = !mute" class="button-controls" size="sm" pill
+                      :variant="mute ? 'outline-secondary' : 'primary'">
+              <b-icon :icon="mute ? 'volume-mute' : 'volume-up-fill'"></b-icon>
+            </b-button>
+            <b-button @click="end" class="button-controls" size="sm" pill variant="outline-danger">
+              <b-icon icon="x"></b-icon>
+            </b-button>
+          </div>
+        </div>-->
     <svg
         style="overflow:visible"
         v-show="status.onGame && !status.onCountDown"
@@ -52,7 +52,7 @@
         ref="countdown"
         :counts="2"
     ></count-down-spinner>
-    <div style="height:300px" class="d-flex align-items-center justify-content-center" v-if="status.onFinish">
+    <div style="height:300px" class="d-flex align-items-center justify-content-center" v-show="status.onFinish">
       <div class="col-8">
         <AnswerForm
             :answer="answer"
@@ -87,29 +87,41 @@ export default {
     },
     delay: {
       type: Number,
-      default: 1500
+      default: 1500,
+    },
+    lang: {
+      type: String,
+      default: 'ru',
     },
   },
   data() {
     return {
       status: {
         onGame: false,
+        onCountUp: false,
         onCountDown: false,
         onFinish: false,
       },
-      h: {
-        timeout: null,
-        disableButtons: false,
-      },
+      timeout: null,
       answer: null,
       number: null,
       numberKey: 0,
       aboveZero: true,
       sounds: null,
-      mute: false
     }
   },
   computed: {
+    settings() {
+      return this.$store.getters.getGameSettings
+    },
+  },
+  watch: {
+    status: {
+      deep: true,
+      handler() {
+        this.$store.dispatch('setGameStatus', this.status)
+      },
+    },
   },
   methods: {
     drawGame() {
@@ -119,12 +131,12 @@ export default {
         const next = () => {
           const num = array.shift()
           if (array.length) this.sounds.preLoadSound(array[0])
-          if (!this.mute) this.sounds.playSound(num, 0.7)
+          if (!this.settings.muteSound) this.sounds.playSound(num, 0.7)
           this.aboveZero = num > 0
           this.number = Math.abs(num)
           this.numberKey++
-          clearTimeout(this.h.timeout)
-          this.h.timeout = setTimeout(() => {
+          clearTimeout(this.timeout)
+          this.timeout = setTimeout(() => {
             array.length > 0 ? next() : resolve()
           }, delay)
         }
@@ -133,27 +145,29 @@ export default {
     },
     async start(startToBeginTime = 500) {
       this.clear()
+      const s = this.status
       const cd = this.$refs.countdown
-      this.status.onGame = this.status.onCountDown = true
+      s.onGame = true
+      s.onCountDown = true
       this.answer = calcAnswer(this.numbers)
-      this.sounds = new SoundNumbers(this.numbers, 'ru')
-      this.h.disableButtons = true
-      this.status.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
-      this.h.disableButtons = false
-      this.status.onCountDown ? await cd.start() : cd.stop()
-      this.status.onCountDown = false
-      if (this.status.onGame) await this.drawGame()
+      this.sounds = new SoundNumbers(this.numbers, this.lang)
+      s.onCountUp = true
+      s.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
+      s.onCountUp = false
+      s.onCountDown ? await cd.start() : cd.stop()
+      s.onCountDown = false
+      if (s.onGame) await this.drawGame()
       this.clear()
-      this.status.onFinish = true
-      this.$nextTick(() => this.$refs.answer.focus())
+      s.onFinish = true
+      if (this.$refs.answer) this.$refs.answer.focus()
     },
     clear() {
-      clearTimeout(this.h.timeout)
+      clearTimeout(this.timeout)
       this.status.onGame = false
+      this.status.onCountUp = false
       this.status.onCountDown = false
       this.status.onFinish = false
-      this.h.disableButtons = false
-      this.h.timeout = null
+      this.timeout = null
       this.number = null
       this.numberKey = 0
     },
@@ -164,6 +178,9 @@ export default {
     async restart() {
       await this.start(900)
     },
+  },
+  beforeDestroy() {
+    this.clear()
   },
 }
 </script>

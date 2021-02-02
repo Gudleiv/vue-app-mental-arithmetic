@@ -1,14 +1,13 @@
 <template>
   <b-button
-      :class="['button', { 'button-text': hasText}]"
-      :style="{ 'flexDirection': leftText ? 'row-reverse' : 'row'}"
+      :class="['button', { 'button-text': text}]"
+      :style="{ 'flexDirection': !reverse ? 'row-reverse' : 'row'}"
       size="sm"
       pill
       v-on="$listeners"
       v-bind="$attrs"
-  >
-    <b-icon :icon="icon" :class="{ 'icon-text': hasText}"></b-icon>
-    <slot></slot>
+  >{{ text }}
+    <b-icon :icon="icon" :class="{ 'icon-text': text}"></b-icon>
   </b-button>
 </template>
 
@@ -20,19 +19,15 @@ export default {
       type: String,
       default: 'circle',
     },
+    text: {
+      type: String,
+      default: ''
+    },
     reverse: {
       type: Boolean,
       default: false,
     },
-  },
-  computed: {
-    hasText() {
-      return this.$slots.default
-    },
-    leftText() {
-      return this.hasText && this.reverse
-    }
-  },
+  }
 }
 </script>
 

@@ -6,6 +6,13 @@ export default {
       amountOfNumbers: 10,
       timeInterval: 1.5,
       digitNumber: 1,
+      muteSound: false,
+    },
+    status: {
+      onGame: false,
+      onCountUp: false,
+      onCountDown: false,
+      onFinish: false,
     }
   },
   mutations: {
@@ -17,10 +24,25 @@ export default {
     },
     SET_SETTING_DNUMBER(state, payload) {
       state.settings.digitNumbers = payload
-    }
+    },
+    SET_SETTING_MUTESOUND(state, payload) {
+      state.settings.muteSound = payload
+    },
+    SET_STATUS_ONGAME(state, payload) {
+      state.status.onGame = payload
+    },
+    SET_STATUS_ONCOUNTUP(state, payload) {
+      state.status.onCountUp = payload
+    },
+    SET_STATUS_ONCOUNTDOWN(state, payload) {
+      state.status.onCountDown = payload
+    },
+    SET_STATUS_ONFINISH(state, payload) {
+      state.status.onFinish = payload
+    },
   },
   actions: {
-    fetchSettings({commit, dispatch}) {
+    fetchGameSettings({commit, dispatch}) {
       const settings = JSON.parse(localStorage.getItem('settings'))
       if (settings && Object.keys(settings).length) {
         if (
@@ -38,10 +60,10 @@ export default {
           && settings.digitNumber < 1
           || settings.digitNumber > 5
         ) return
-        dispatch('updateSettings', settings)
+        dispatch('updateGameSettings', settings)
       }
     },
-    updateSettings({commit}, payload) {
+    updateGameSettings({commit}, payload) {
       localStorage.setItem('settings', JSON.stringify(payload))
 
       if (has('amountOfNumbers', payload)) {
@@ -53,11 +75,24 @@ export default {
       if (has('digitNumber', payload)) {
         commit('SET_SETTING_DNUMBER', payload.digitNumber)
       }
+      if (has('muteSound', payload)) {
+        commit('SET_SETTING_DNUMBER', payload.muteSound)
+      }
+    },
+    setGameStatus({commit, getters}, p) {
+      const s = getters.getGameStatus
+      if (changes('onGame', p, s)) commit('SET_STATUS_ONGAME', p.onGame)
+      if (changes('onCountUp', p, s)) commit('SET_STATUS_ONCOUNTUP', p.onCountUp)
+      if (changes('onCountDown', p, s)) commit('SET_STATUS_ONCOUNTDOWN', p.onCountDown)
+      if (changes('onFinish', p, s)) commit('SET_STATUS_ONFINISH', p.onFinish)
     }
   },
   getters: {
-    getSettings(state) {
+    getGameSettings(state) {
       return state.settings
+    },
+    getGameStatus(state) {
+      return state.status
     }
   }
 }
@@ -67,4 +102,10 @@ function has(prop, obj) {
   if (typeof obj[prop] === 'boolean') return true
   if (obj[prop]) return true
   return false
+}
+
+// = if payload has new data
+function changes(prop, newObj, oldObj) {
+  if (!newObj.hasOwnProperty(prop) && !oldObj.hasOwnProperty(prop)) return false
+  return newObj[prop] !== oldObj[prop];
 }

@@ -46,7 +46,7 @@
 
 export default {
   created() {
-    this.$store.dispatch('fetchSettings')
+    this.$store.dispatch('fetchGameSettings')
     this.timeInterval = this.settings.timeInterval
     this.amountOfNumbers = this.settings.amountOfNumbers
     this.digitNumber = this.settings.digitNumber
@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     settings() {
-      return this.$store.getters.getSettings
+      return this.$store.getters.getGameSettings
     },
   },
   methods: {

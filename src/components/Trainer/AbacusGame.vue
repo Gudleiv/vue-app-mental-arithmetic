@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     settings() {
-      return this.$store.getters.getSettings
+      return this.$store.getters.getGameSettings
     },
     timeInterval() {
       return this.settings.timeInterval * 1000
