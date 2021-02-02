@@ -22,9 +22,14 @@
             </b-button>
           </div>
         </div>-->
+    <count-down-spinner
+        v-show="status === 10"
+        ref="countdown"
+        :counts="2"
+    ></count-down-spinner>
     <svg
         style="overflow:visible"
-        v-show="status.onGame && !status.onCountDown"
+        v-show="status === 20"
         viewBox="0 0 100 100">
       <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1"/>
       <text
@@ -47,18 +52,15 @@
         </text>
       </transition>
     </svg>
-    <count-down-spinner
-        v-show="status.onCountDown"
-        ref="countdown"
-        :counts="2"
-    ></count-down-spinner>
-    <div style="height:300px" class="d-flex align-items-center justify-content-center" v-show="status.onFinish">
-      <div class="col-8">
-        <AnswerForm
-            :answer="answer"
-            @end="end"
-            ref="answer"
-        />
+    <div v-show="status === 40 || status === 42" >
+      <div style="height:300px" class="d-flex align-items-center justify-content-center">
+        <div class="col-8">
+          <AnswerForm
+              :answer="answer"
+              @end="end"
+              ref="answer"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -96,12 +98,7 @@ export default {
   },
   data() {
     return {
-      status: {
-        onGame: false,
-        onCountUp: false,
-        onCountDown: false,
-        onFinish: false,
-      },
+      status: 0, // 0 - off, 10 - spinner, 20 - output, 42 - finish
       timeout: null,
       answer: null,
       number: null,
@@ -116,17 +113,13 @@ export default {
     },
   },
   watch: {
-    status: {
-      deep: true,
-      handler() {
-        this.$store.dispatch('setGameStatus', this.status)
-      },
-    },
+    status(status) {
+      this.$store.dispatch('setGameStatus', status)
+    }
   },
   methods: {
     drawGame() {
       const array = [...this.numbers]
-      const delay = this.delay
       return new Promise((resolve) => {
         const next = () => {
           const num = array.shift()
@@ -137,36 +130,30 @@ export default {
           this.numberKey++
           clearTimeout(this.timeout)
           this.timeout = setTimeout(() => {
-            array.length > 0 ? next() : resolve()
-          }, delay)
+            if (array.length > 0) {
+              next()
+            } else {
+              resolve()
+            }
+          }, this.delay)
         }
         next()
       })
     },
     async start(startToBeginTime = 500) {
       this.clear()
-      const s = this.status
-      const cd = this.$refs.countdown
-      s.onGame = true
-      s.onCountDown = true
-      this.answer = calcAnswer(this.numbers)
-      this.sounds = new SoundNumbers(this.numbers, this.lang)
-      s.onCountUp = true
-      s.onCountDown ? await cd.startToBegin(startToBeginTime) : cd.stop()
-      s.onCountUp = false
-      s.onCountDown ? await cd.start() : cd.stop()
-      s.onCountDown = false
-      if (s.onGame) await this.drawGame()
-      this.clear()
-      s.onFinish = true
+      this.prepare()
+      this.status = 10
+      await this.$refs.countdown.prepare(startToBeginTime)
+      await this.$refs.countdown.start()
+      this.status = 20
+      await this.drawGame()
+      this.status = 40
       if (this.$refs.answer) this.$refs.answer.focus()
     },
     clear() {
       clearTimeout(this.timeout)
-      this.status.onGame = false
-      this.status.onCountUp = false
-      this.status.onCountDown = false
-      this.status.onFinish = false
+      this.status = 0
       this.timeout = null
       this.number = null
       this.numberKey = 0
@@ -174,6 +161,10 @@ export default {
     end() {
       this.clear()
       this.$emit('end')
+    },
+    prepare() {
+      this.answer = calcAnswer(this.numbers)
+      this.sounds = new SoundNumbers(this.numbers, this.lang)
     },
     async restart() {
       await this.start(900)

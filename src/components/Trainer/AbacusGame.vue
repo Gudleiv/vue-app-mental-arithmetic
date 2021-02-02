@@ -17,18 +17,19 @@
         <AbacusGameSettings
             v-show="!gameOn"
         />
-        <div class="d-flex justify-content-end">
-          <b-button
-              v-show="!gameOn"
-              variant="primary"
-              style="width:8rem"
-              size="lg"
-              @click="start"
-          >Старт
-          </b-button>
+        <div>
+          <div class="d-flex justify-content-end">
+            <b-button
+                v-show="!gameOn"
+                variant="primary"
+                style="width:8rem"
+                size="lg"
+                @click="start"
+            >Старт
+            </b-button>
+          </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>

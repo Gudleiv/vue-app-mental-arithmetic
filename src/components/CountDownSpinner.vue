@@ -1,30 +1,30 @@
 <template>
-    <svg
-        viewBox="0 0 100 100"
-    >
-      <defs>
-        <linearGradient id="test">
-          <stop offset="0%" stop-color="#145A32"/>
-          <stop offset="100%" stop-color="#0E6655"/>
-        </linearGradient>
-      </defs>
-      <circle
-          v-if="show"
-          ref="circle"
-          :stroke-dasharray="length"
-          :stroke-dashoffset="offset"
-          class="circle__animation circle"
-          :style="{ animationDuration,
+  <svg
+      viewBox="0 0 100 100"
+  >
+    <defs>
+      <linearGradient id="test">
+        <stop offset="0%" stop-color="#145A32"/>
+        <stop offset="100%" stop-color="#0E6655"/>
+      </linearGradient>
+    </defs>
+    <circle
+        v-if="showSpin"
+        ref="circle"
+        :stroke-dasharray="length"
+        :stroke-dashoffset="offset"
+        class="circle__animation circle"
+        :style="{ animationDuration,
                     animationName,
                   }"
-          stroke="url(#test)"
-          stroke-width="4"
-          fill="transparent"
-          r="40"
-          cx="50"
-          cy="50"
-      />
-      <transition name="fade">
+        stroke="url(#test)"
+        stroke-width="4"
+        fill="transparent"
+        r="40"
+        cx="50"
+        cy="50"
+    />
+    <transition name="fade">
       <text
           class="circle-text"
           v-if="showText"
@@ -33,9 +33,10 @@
           text-anchor="middle"
           stroke-width="1px"
           dy=".3em"
-      >{{counter - 1}}</text>
-      </transition>
-    </svg>
+      >{{ counter - 1 }}
+      </text>
+    </transition>
+  </svg>
 </template>
 
 <script>
@@ -44,12 +45,12 @@ export default {
   props: {
     counts: {
       type: Number,
-      default: 3
+      default: 3,
     },
   },
   data() {
     return {
-      show: false,
+      showSpin: false,
       showText: false,
       timeout: null,
       counter: this.counts,
@@ -57,7 +58,7 @@ export default {
       offset: 0,
       delay: 1000,
       animationName: this.countsAnimationName,
-      animationDuration: this.countsAnimationDuration
+      animationDuration: this.countsAnimationDuration,
     }
   },
   computed: {
@@ -79,31 +80,32 @@ export default {
     },
     time() {
       return this.counts
-    }
+    },
   },
   methods: {
     start() {
+      this.clear()
       return new Promise((resolve) => {
-        this.stop()
         this.$nextTick(() => {
           this.animationName = this.countsAnimationName
           this.animationDuration = this.countsAnimationDuration
-          this.show = true
+          this.showSpin = true
           this.showText = true
-          this.countDown().then(() => {
-            this.stop()
-            resolve()
-          })
+          this.countDown()
+              .then(() => {
+                this.clear()
+                resolve()
+              })
         })
       })
     },
 
-    stop() {
+    clear() {
       clearTimeout(this.timeout)
+      this.showSpin = false
+      this.showText = false
       this.timeout = null
       this.counter = this.counts
-      this.show = false
-      this.showText = false
     },
 
     countDown() {
@@ -123,20 +125,23 @@ export default {
       })
     },
 
-    startToBegin(delay = 1000) {
+    prepare(delay = 1000) {
+      this.clear()
+      this.showSpin = true
+      this.countsAnimationName = 'circleCountUp'
+      this.countsAnimationDuration = delay
       return new Promise((resolve) => {
-        this.stop()
-        this.show = true
-        this.countsAnimationName = 'circleCountUp'
-        this.countsAnimationDuration = delay
         setTimeout(() => {
-          resolve()
           this.animationName = this.countsAnimationName
           this.animationDuration = this.countsAnimationDuration
-          this.show = false
+          this.showSpin = false
+          resolve()
         }, delay)
       })
     }
+  },
+  beforeDestroy() {
+    this.clear()
   }
 }
 </script>

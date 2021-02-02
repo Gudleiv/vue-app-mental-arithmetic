@@ -8,12 +8,13 @@ export default {
       digitNumber: 1,
       muteSound: false,
     },
-    status: {
-      onGame: false,
-      onCountUp: false,
-      onCountDown: false,
-      onFinish: false,
-    }
+    status: 0
+    /*
+    * >1 - on game
+    * 10 - on count up spinner, 11 - on count down spinner
+    * 20 - on output
+    * 40 - on answer form
+    */
   },
   mutations: {
     SET_SETTING_AMOUNTNUMS(state, payload) {
@@ -28,17 +29,9 @@ export default {
     SET_SETTING_MUTESOUND(state, payload) {
       state.settings.muteSound = payload
     },
-    SET_STATUS_ONGAME(state, payload) {
-      state.status.onGame = payload
-    },
-    SET_STATUS_ONCOUNTUP(state, payload) {
-      state.status.onCountUp = payload
-    },
-    SET_STATUS_ONCOUNTDOWN(state, payload) {
-      state.status.onCountDown = payload
-    },
-    SET_STATUS_ONFINISH(state, payload) {
-      state.status.onFinish = payload
+    SET_STATUS_GAME(state, payload) {
+      console.log(payload)
+      state.status = payload
     },
   },
   actions: {
@@ -76,20 +69,22 @@ export default {
         commit('SET_SETTING_DNUMBER', payload.digitNumber)
       }
       if (has('muteSound', payload)) {
-        commit('SET_SETTING_DNUMBER', payload.muteSound)
+        commit('SET_SETTING_MUTESOUND', payload.muteSound)
       }
     },
-    setGameStatus({commit, getters}, p) {
-      const s = getters.getGameStatus
-      if (changes('onGame', p, s)) commit('SET_STATUS_ONGAME', p.onGame)
-      if (changes('onCountUp', p, s)) commit('SET_STATUS_ONCOUNTUP', p.onCountUp)
-      if (changes('onCountDown', p, s)) commit('SET_STATUS_ONCOUNTDOWN', p.onCountDown)
-      if (changes('onFinish', p, s)) commit('SET_STATUS_ONFINISH', p.onFinish)
+    setGameStatus({commit}, payload) {
+      commit('SET_STATUS_GAME', payload)
     }
   },
   getters: {
     getGameSettings(state) {
       return state.settings
+    },
+    getGameSetting(state) {
+      return name => {
+        if (state.settings.hasOwnProperty(name)) return state.settings[name]
+        else throw new Error(`Property ${name} in state.settings not found`)
+      }
     },
     getGameStatus(state) {
       return state.status
@@ -100,8 +95,7 @@ export default {
 function has(prop, obj) {
   if (!obj.hasOwnProperty(prop)) return false
   if (typeof obj[prop] === 'boolean') return true
-  if (obj[prop]) return true
-  return false
+  return !!obj[prop];
 }
 
 // = if payload has new data
