@@ -34,7 +34,7 @@
           label-for="input-4"
           :description="`Время отображения каждого числа: ${timeInterval} с`"
       >
-        <b-form-input type="range" @change="updateSettings" min="0.5" max="10" wrap step="0.1" id="input-4"
+        <b-form-input type="range" @change="updateSettings" min="0.7" max="10" wrap step="0.1" id="input-4"
                       v-model="timeInterval"></b-form-input>
       </b-form-group>
     </b-form>
@@ -68,6 +68,7 @@ export default {
       timeInterval: '',
       amountOfNumbers: '',
       digitNumber: '',
+      mute: false,
     }
   },
   computed: {

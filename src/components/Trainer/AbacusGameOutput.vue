@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="col-lg-8 col-md-10 mx-auto">
     <div class="d-flex">
       <div class="ml-auto">
         <transition name="fade">
@@ -85,6 +85,10 @@ export default {
       default: [],
       required: true,
     },
+    delay: {
+      type: Number,
+      default: 1500
+    },
   },
   data() {
     return {
@@ -101,10 +105,11 @@ export default {
       number: null,
       numberKey: 0,
       aboveZero: true,
-      delay: 2000,
       sounds: null,
       mute: false
     }
+  },
+  computed: {
   },
   methods: {
     drawGame() {
@@ -163,7 +168,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .button-controls {
   padding: 0;
   width: 2.5rem;

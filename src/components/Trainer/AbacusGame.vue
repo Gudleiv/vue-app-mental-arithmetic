@@ -1,15 +1,19 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-lg-6 col-md-8 mx-auto">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="d-flex">
+          <div class="ml-auto mb-3">
+            <AbacusGameControls />
+          </div>
+        </div>
         <AbacusGameOutput
             @end="finish"
             v-show="gameOn"
             ref="output"
             :numbers="nums"
+            :delay="timeInterval"
         />
-      </div>
-      <div class="col-lg-8 col-md-10 mx-auto">
         <AbacusGameSettings
             v-show="!gameOn"
         />
@@ -32,18 +36,29 @@
 <script>
 import AbacusGameSettings from './AbacusGameSettings'
 import AbacusGameOutput from './AbacusGameOutput'
+import AbacusGameControls from './AbacusGameControls'
 
 export default {
   name: 'AbacusGame',
   components: {
     AbacusGameSettings,
     AbacusGameOutput,
+    AbacusGameControls,
   },
   data() {
     return {
-      nums: [1, 2],
+      nums: [1, 2, 3, -40, 40],
       gameOn: false,
     }
+  },
+  computed: {
+    settings() {
+      return this.$store.getters.getSettings
+    },
+    timeInterval() {
+      return this.settings.timeInterval * 1000
+    },
+
   },
   methods: {
     start() {

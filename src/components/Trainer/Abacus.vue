@@ -5,16 +5,10 @@
 </template>
 
 <script>
-
 export default {
-  name: 'Abacus.vue',
-  components: {
-  },
+  name: 'Abacus',
 }
 </script>
 
 <style>
-.abacus__tabspacer {
-  flex-grow: 1;
-}
 </style>
