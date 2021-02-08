@@ -11,8 +11,11 @@ export default {
     status: 0
     /*
     * >1 - on game
-    * 10 - on count up spinner, 11 - on count down spinner
-    * 20 - on output
+    * 10 - on count up spinner
+    * 11 - on count down spinner
+    * 20 - on restart
+    * 22 - on cancel
+    * 30 - on output
     * 40 - on answer form
     */
   },
@@ -30,7 +33,6 @@ export default {
       state.settings.muteSound = payload
     },
     SET_STATUS_GAME(state, payload) {
-      console.log(payload)
       state.status = payload
     },
   },

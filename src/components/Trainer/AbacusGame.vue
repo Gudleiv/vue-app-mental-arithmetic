@@ -8,19 +8,18 @@
           </div>
         </div>
         <AbacusGameOutput
-            @end="finish"
-            v-show="gameOn"
+            v-if="status > 0"
             ref="output"
             :numbers="nums"
             :delay="timeInterval"
         />
         <AbacusGameSettings
-            v-show="!gameOn"
+            v-show="status === 0"
         />
         <div>
           <div class="d-flex justify-content-end">
             <b-button
-                v-show="!gameOn"
+                v-show="status === 0"
                 variant="primary"
                 style="width:8rem"
                 size="lg"
@@ -48,8 +47,7 @@ export default {
   },
   data() {
     return {
-      nums: [1],
-      gameOn: false,
+      nums: [1,2],
     }
   },
   computed: {
@@ -59,15 +57,15 @@ export default {
     timeInterval() {
       return this.settings.timeInterval * 1000
     },
-
+    status() {
+      return this.$store.getters.getGameStatus
+    }
   },
   methods: {
     start() {
-      this.gameOn = true
-      this.$refs.output.start()
-    },
-    finish() {
-      this.gameOn = false
+      this.$store.dispatch('setGameStatus', 1).then(() =>{
+        this.$refs.output.start()
+      })
     },
   },
 }

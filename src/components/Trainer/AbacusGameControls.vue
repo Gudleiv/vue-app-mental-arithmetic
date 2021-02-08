@@ -1,7 +1,7 @@
 <template>
   <div class="abacus-game-controls">
     <mini-button v-if="status === 40" icon="grip-vertical" text="Столбиком" variant="primary"></mini-button>
-    <mini-button @click="restartGame" v-if="status >= 10" icon="arrow-clockwise" variant="outline-primary"></mini-button>
+    <mini-button @click="restartGame" v-if="status > 0" :disabled="status < 20" icon="arrow-clockwise" variant="outline-primary"></mini-button>
     <mini-button @click="muteSound" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
     <mini-button @click="cancelGame" v-if="status !== 0" icon="x" variant="outline-danger"></mini-button>
 
@@ -29,13 +29,13 @@ export default {
   },
   methods: {
     restartGame() {
-
+      this.$store.dispatch('setGameStatus', 20)
+    },
+    cancelGame() {
+      this.$store.dispatch('setGameStatus', 22)
     },
     muteSound() {
       this.$store.dispatch('updateGameSettings', { muteSound: !this.mute})
-    },
-    cancelGame() {
-
     },
   }
 }

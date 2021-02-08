@@ -1,27 +1,5 @@
 <template>
   <div class="col-lg-8 col-md-10 mx-auto">
-    <!--    <div class="d-flex">
-          <div class="ml-auto">
-            <transition name="fade">
-              <b-button v-show="status.onFinish" class="button-controls" style="padding:0 1rem;width:auto" size="sm" pill
-                        variant="primary">
-                <b-icon icon="grip-vertical"></b-icon> Столбиком
-              </b-button>
-            </transition>
-
-            <b-button :disabled="status.onCountUp" @click="restart" class="button-controls" size="sm" pill
-                      variant="outline-primary">
-              <b-icon icon="arrow-clockwise"></b-icon>
-            </b-button>
-            <b-button @click="mute = !mute" class="button-controls" size="sm" pill
-                      :variant="mute ? 'outline-secondary' : 'primary'">
-              <b-icon :icon="mute ? 'volume-mute' : 'volume-up-fill'"></b-icon>
-            </b-button>
-            <b-button @click="end" class="button-controls" size="sm" pill variant="outline-danger">
-              <b-icon icon="x"></b-icon>
-            </b-button>
-          </div>
-        </div>-->
     <count-down-spinner
         v-show="status === 10"
         ref="countdown"
@@ -29,7 +7,7 @@
     ></count-down-spinner>
     <svg
         style="overflow:visible"
-        v-show="status === 20"
+        v-show="status === 30"
         viewBox="0 0 100 100">
       <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1"/>
       <text
@@ -52,10 +30,11 @@
         </text>
       </transition>
     </svg>
-    <div v-show="status === 40 || status === 42" >
+    <div v-show="status === 40" >
       <div style="height:300px" class="d-flex align-items-center justify-content-center">
         <div class="col-8">
           <AnswerForm
+              :key="answerKey"
               :answer="answer"
               @end="end"
               ref="answer"
@@ -98,9 +77,9 @@ export default {
   },
   data() {
     return {
-      status: 0, // 0 - off, 10 - spinner, 20 - output, 42 - finish
       timeout: null,
       answer: null,
+      answerKey: 0,
       number: null,
       numberKey: 0,
       aboveZero: true,
@@ -111,10 +90,21 @@ export default {
     settings() {
       return this.$store.getters.getGameSettings
     },
+    status: {
+      get() {
+        return this.$store.getters.getGameStatus
+      },
+      set(value) {
+        this.$store.dispatch('setGameStatus', value)
+      }
+    }
   },
   watch: {
-    status(status) {
-      this.$store.dispatch('setGameStatus', status)
+    status(value) {
+      switch (value) {
+        case 20: this.restart(); break;
+        case 22: this.end(); break;
+      }
     }
   },
   methods: {
@@ -146,21 +136,22 @@ export default {
       this.status = 10
       await this.$refs.countdown.prepare(startToBeginTime)
       await this.$refs.countdown.start()
-      this.status = 20
+      this.status = 30
       await this.drawGame()
       this.status = 40
-      if (this.$refs.answer) this.$refs.answer.focus()
+      this.$refs.answer.focus()
     },
     clear() {
       clearTimeout(this.timeout)
-      this.status = 0
+      this.status = 1
       this.timeout = null
       this.number = null
       this.numberKey = 0
+      this.answerKey = Date.now()
     },
     end() {
-      this.clear()
       this.$emit('end')
+      this.$destroy()
     },
     prepare() {
       this.answer = calcAnswer(this.numbers)
@@ -172,6 +163,7 @@ export default {
   },
   beforeDestroy() {
     this.clear()
+    this.status = 0
   },
 }
 </script>

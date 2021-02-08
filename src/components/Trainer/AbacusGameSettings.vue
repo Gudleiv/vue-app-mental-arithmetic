@@ -83,7 +83,7 @@ export default {
         timeInterval: this.timeInterval,
         digitNumber: this.digitNumber,
       }
-      this.$store.dispatch('updateSettings', settings)
+      this.$store.dispatch('updateGameSettings', settings)
     },
   },
 }

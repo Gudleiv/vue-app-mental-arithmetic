@@ -34,7 +34,9 @@ export default {
   },
   methods: {
     focus() {
-      this.$refs.input.focus()
+      this.$nextTick(() => {
+        this.$refs.input.focus()
+      })
     },
     submit() {
       this.result = null
