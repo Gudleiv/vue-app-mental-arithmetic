@@ -209,10 +209,19 @@ export default {
       }
     },
     exercises(state) {
-      return exId => {
-        const category = state.categories.find(cat => cat.id === exId)
-        if (!category.exercises) return []
+      return catId => {
+        const category = state.categories.find(cat => cat.id === catId)
+        if (!category || !category.exercises) return []
         return category.exercises
+      }
+    },
+    enabledExercises(state) {
+      return catId => {
+        const category = state.categories
+          .find(cat => cat.id === catId)
+          .exercises.filter(ex => ex.enabled)
+        if (!category.length) return []
+        return category
       }
     },
     getExercise(state) {

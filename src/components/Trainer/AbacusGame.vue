@@ -4,7 +4,7 @@
       <div class="col-lg-8 col-md-10 mx-auto">
         <div class="d-flex">
           <div class="ml-auto mb-2">
-            <AbacusGameControls />
+            <AbacusGameControls/>
           </div>
         </div>
         <AbacusGameOutput
@@ -39,7 +39,7 @@ import AbacusGameOutput from './AbacusGameOutput'
 import AbacusGameControls from './AbacusGameControls'
 
 function getRandomInt(min, max) {
-  return  Math.floor( Math.random() * (max - min + 1)) + min
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 export default {
@@ -51,7 +51,7 @@ export default {
   },
   data() {
     return {
-      exercise: [],
+      exercise: null,
     }
   },
   computed: {
@@ -68,19 +68,30 @@ export default {
   methods: {
     start() {
       this.prepareGameArray()
-      this.$store.dispatch('setGameStatus', 1).then(() =>{
-        this.$refs.output.start()
-      })
+          .then(() => {
+            this.$store.dispatch('setGameStatus', 1)
+          })
+          .then(() => {
+            this.$refs.output.start()
+          })
+          .catch(() => {
+            this.$store.dispatch('setError', 'Создайте упражнения')
+          })
     },
     prepareGameArray() {
-      const exercises = this.$store.getters.exercises(this.settings.categoryId)
-      const randomExercise = getRandomInt(1, exercises.length) - 1
-      this.$store.dispatch('updateGameSettings', {
-        exerciseId: exercises[randomExercise].id
+      return new Promise((resolve, reject) => {
+        const exercises = this.$store.getters.enabledExercises(this.settings.categoryId)
+        console.log(exercises)
+        if (exercises.length === 0) reject()
+        const randomExercise = getRandomInt(1, exercises.length) - 1
+        this.$store.dispatch('updateGameSettings', {
+          exerciseId: exercises[randomExercise].id,
+        })
+        const exercise = this.$store.getters.getExercise(this.settings.categoryId, exercises[randomExercise].id)
+        this.exercise = exercise.slice(0, this.settings.amountOfNumbers)
+        resolve()
       })
-      const exercise = this.$store.getters.getExercise(this.settings.categoryId, exercises[randomExercise].id)
-      this.exercise = exercise.slice(0, this.settings.amountOfNumbers)
-    }
+    },
   },
 }
 </script>

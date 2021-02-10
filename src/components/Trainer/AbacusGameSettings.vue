@@ -15,7 +15,7 @@
           label="Количество чисел:"
           label-for="input-2"
       >
-        <b-form-spinbutton @change="updateSettings" wrap v-model="amountOfNumbers" id="input-2"
+        <b-form-spinbutton @change="updateSettings" min="2" wrap v-model="amountOfNumbers" id="input-2"
                            inline></b-form-spinbutton>
       </b-form-group>
       <b-form-group
@@ -49,7 +49,6 @@ export default {
     this.timeInterval = this.settings.timeInterval
     this.amountOfNumbers = this.settings.amountOfNumbers
     this.digitNumber = this.settings.digitNumber
-    this.muteSound = this.settings.muteSound
     this.categoryId = this.settings.categoryId
   },
   name: 'AbacusGameSettings',
@@ -59,7 +58,6 @@ export default {
       timeInterval: '',
       amountOfNumbers: '',
       digitNumber: '',
-      muteSound: false,
     }
   },
   computed: {
@@ -94,7 +92,6 @@ export default {
         amountOfNumbers: this.amountOfNumbers,
         timeInterval: this.timeInterval,
         digitNumber: this.digitNumber,
-        muteSound: this.muteSound,
         categoryId: this.categoryId
       }
       this.$store.dispatch('updateGameSettings', settings)

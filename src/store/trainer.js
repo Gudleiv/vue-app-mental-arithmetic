@@ -3,8 +3,8 @@ import firebase from '@/firebase'
 export default {
   state: {
     settings: {
-      amountOfNumbers: 10,
-      timeInterval: 1.5,
+      amountOfNumbers: 6,
+      timeInterval: 1.7,
       digitNumber: 1,
       muteSound: false,
       categoryId: null,
