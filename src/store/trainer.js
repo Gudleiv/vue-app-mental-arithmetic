@@ -68,7 +68,8 @@ export default {
     },
     updateGameSettings({commit}, payload) {
       const settings = JSON.parse(localStorage.getItem('settings'))
-      localStorage.setItem('settings', JSON.stringify(Object.assign(settings, payload)))
+      if (settings) localStorage.setItem('settings', JSON.stringify(Object.assign(settings, payload)))
+      else localStorage.setItem('settings', JSON.stringify(payload))
 
       if (has('amountOfNumbers', payload)) {
         commit('SET_SETTING_AMOUNTNUMS', payload.amountOfNumbers)
