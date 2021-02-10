@@ -7,7 +7,7 @@
           label="Категория упражнений:"
           label-for="input-1"
       >
-        <b-form-select id="input-1" :disabled="!category" v-model="category" :options="categoriesList"></b-form-select>
+        <b-form-select id="input-1" @change="updateSettings" :disabled="!categoryId" v-model="categoryId" :options="categoriesList"></b-form-select>
       </b-form-group>
       <b-form-group
           label-cols-md="5"
@@ -46,16 +46,16 @@
 
 export default {
   created() {
-    this.$store.dispatch('fetchGameSettings')
     this.timeInterval = this.settings.timeInterval
     this.amountOfNumbers = this.settings.amountOfNumbers
     this.digitNumber = this.settings.digitNumber
     this.muteSound = this.settings.muteSound
+    this.categoryId = this.settings.categoryId
   },
   name: 'AbacusGameSettings',
   data() {
     return {
-      category: '',
+      categoryId: '',
       timeInterval: '',
       amountOfNumbers: '',
       digitNumber: '',
@@ -74,7 +74,7 @@ export default {
             text: cat.name
           }
         })
-        this.category = list[0].value
+        this.categoryId = list[0].value
         return list
       } else {
         return [{
@@ -82,7 +82,6 @@ export default {
           text: 'Нет упражнений'
         }]
       }
-
     }
   },
   methods: {
@@ -91,11 +90,12 @@ export default {
         amountOfNumbers: this.amountOfNumbers,
         timeInterval: this.timeInterval,
         digitNumber: this.digitNumber,
-        muteSound: this.muteSound
+        muteSound: this.muteSound,
+        categoryId: this.categoryId
       }
       this.$store.dispatch('updateGameSettings', settings)
     },
-  },
+  }
 }
 </script>
 

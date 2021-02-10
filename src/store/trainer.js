@@ -82,10 +82,10 @@ export default {
         commit('SET_SETTING_MUTESOUND', payload.muteSound)
       }
       if (has('categoryId', payload)) {
-        commit('SET_SETTING_CATID', payload.muteSound)
+        commit('SET_SETTING_CATID', payload.categoryId)
       }
       if (has('exerciseId', payload)) {
-        commit('SET_SETTING_EXID', payload.muteSound)
+        commit('SET_SETTING_EXID', payload.exerciseId)
       }
     },
     setGameStatus({commit}, payload) {

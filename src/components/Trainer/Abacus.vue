@@ -9,6 +9,7 @@ export default {
   name: 'Abacus',
   created() {
     this.$store.dispatch('fetchCategories')
+    this.$store.dispatch('fetchGameSettings')
   }
 }
 </script>
