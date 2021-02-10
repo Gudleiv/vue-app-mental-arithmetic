@@ -7,6 +7,9 @@
 <script>
 export default {
   name: 'Abacus',
+  created() {
+    this.$store.dispatch('fetchCategories')
+  }
 }
 </script>
 

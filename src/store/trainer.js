@@ -7,6 +7,8 @@ export default {
       timeInterval: 1.5,
       digitNumber: 1,
       muteSound: false,
+      categoryId: null,
+      exerciseId: null
     },
     status: 0
     /*
@@ -31,6 +33,12 @@ export default {
     },
     SET_SETTING_MUTESOUND(state, payload) {
       state.settings.muteSound = payload
+    },
+    SET_SETTING_CATID(state, payload) {
+      state.settings.categoryId = payload
+    },
+    SET_SETTING_EXID(state, payload) {
+      state.settings.exerciseId = payload
     },
     SET_STATUS_GAME(state, payload) {
       state.status = payload
@@ -72,6 +80,12 @@ export default {
       }
       if (has('muteSound', payload)) {
         commit('SET_SETTING_MUTESOUND', payload.muteSound)
+      }
+      if (has('categoryId', payload)) {
+        commit('SET_SETTING_CATID', payload.muteSound)
+      }
+      if (has('exerciseId', payload)) {
+        commit('SET_SETTING_EXID', payload.muteSound)
       }
     },
     setGameStatus({commit}, payload) {

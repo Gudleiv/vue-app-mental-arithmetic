@@ -185,6 +185,18 @@ export default {
         name: c.name,
       }))
     },
+    categoriesListWithExercises(state) {
+      if (!state.categories.length) null
+      const list = state.categories
+        .filter(c => c.exercises.some(ex => ex.enabled))
+        .filter(c => c.exercises.length)
+        .map(c => ({
+        id: c.id,
+        name: c.name,
+      }))
+      if (list.length) return list
+      else return null
+    },
     categories(state) {
       if (!state.categories.length) return []
       return state.categories

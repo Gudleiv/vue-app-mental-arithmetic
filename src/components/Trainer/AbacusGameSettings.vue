@@ -7,7 +7,7 @@
           label="Категория упражнений:"
           label-for="input-1"
       >
-        <b-form-select id="input-1" v-model="selected" :options="options"></b-form-select>
+        <b-form-select id="input-1" :disabled="!category" v-model="category" :options="categoriesList"></b-form-select>
       </b-form-group>
       <b-form-group
           label-cols-md="5"
@@ -50,31 +50,40 @@ export default {
     this.timeInterval = this.settings.timeInterval
     this.amountOfNumbers = this.settings.amountOfNumbers
     this.digitNumber = this.settings.digitNumber
+    this.muteSound = this.settings.muteSound
   },
   name: 'AbacusGameSettings',
   data() {
     return {
-      selected: 'a',
-      options: [
-        {
-          value: 'a',
-          text: 'Маленькие друзья +1',
-        },
-        {
-          value: 'b',
-          text: 'Маленькие друзья -1',
-        },
-      ],
+      category: '',
       timeInterval: '',
       amountOfNumbers: '',
       digitNumber: '',
-      mute: false,
+      muteSound: false,
     }
   },
   computed: {
     settings() {
       return this.$store.getters.getGameSettings
     },
+    categoriesList() {
+      if (this.$store.getters.categoriesListWithExercises !== null) {
+        const list = this.$store.getters.categoriesListWithExercises.map(cat => {
+          return {
+            value: cat.id,
+            text: cat.name
+          }
+        })
+        this.category = list[0].value
+        return list
+      } else {
+        return [{
+          value: '',
+          text: 'Нет упражнений'
+        }]
+      }
+
+    }
   },
   methods: {
     updateSettings() {
@@ -82,6 +91,7 @@ export default {
         amountOfNumbers: this.amountOfNumbers,
         timeInterval: this.timeInterval,
         digitNumber: this.digitNumber,
+        muteSound: this.muteSound
       }
       this.$store.dispatch('updateGameSettings', settings)
     },

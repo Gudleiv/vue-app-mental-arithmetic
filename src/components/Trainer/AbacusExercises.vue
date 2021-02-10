@@ -92,7 +92,6 @@ import { required, maxLength } from 'vuelidate/lib/validators'
 export default {
   created() {
     this.validate = validateState(this.$v)
-    this.$store.dispatch('fetchCategories')
   },
   components: {
     AbacusExercisesEditor

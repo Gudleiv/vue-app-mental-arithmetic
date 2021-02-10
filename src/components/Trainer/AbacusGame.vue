@@ -59,7 +59,7 @@ export default {
     },
     status() {
       return this.$store.getters.getGameStatus
-    }
+    },
   },
   methods: {
     start() {
@@ -67,6 +67,9 @@ export default {
         this.$refs.output.start()
       })
     },
+    prepareGameArray() {
+      const exercises = this.$store.getters.exercises(this.settings.categoryId)
+    }
   },
 }
 </script>
