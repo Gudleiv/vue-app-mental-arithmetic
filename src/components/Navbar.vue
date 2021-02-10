@@ -4,9 +4,8 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-<!--        <b-nav-item :to="{name: 'Abacus'}">Тренажер</b-nav-item>-->
         <b-nav-item :to="{ name: 'AbacusGame'}">Форсаж</b-nav-item>
-        <b-nav-item disabled :to="{ name: 'AbacusColumnGame'}">Столбики</b-nav-item>
+        <b-nav-item :to="{ name: 'AbacusGameColumns'}">Столбики</b-nav-item>
         <b-nav-item :to="{ name: 'AbacusExercises'}">Упражнения</b-nav-item>
         <b-nav-item disabled to="/multiplication">Умножения</b-nav-item>
       </b-navbar-nav>

@@ -27,7 +27,7 @@
         <b-form-spinbutton wrap min="1" max="3" @change="updateSettings" id="input-3" v-model="digitNumber"
                            inline></b-form-spinbutton>
       </b-form-group>
-      <b-form-group
+      <b-form-group v-if="gameType === 'default'"
           label-cols-md="5"
           content-cols-md="7"
           label="Интервал:"
@@ -51,7 +51,14 @@ export default {
     this.digitNumber = this.settings.digitNumber
     this.categoryId = this.settings.categoryId
   },
+
   name: 'AbacusGameSettings',
+  props: {
+    gameType: {
+      type: String,
+      default: 'default'
+    }
+  },
   data() {
     return {
       categoryId: '',

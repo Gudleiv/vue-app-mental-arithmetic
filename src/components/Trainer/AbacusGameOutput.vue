@@ -5,6 +5,7 @@
         ref="countdown"
         :counts="2"
     ></count-down-spinner>
+    <AbacusGameColumnTable :items="numbers" />
     <svg
         style="overflow:visible"
         v-show="status === 30"
@@ -47,6 +48,7 @@
 
 <script>
 import CountDownSpinner from '@/components/CountDownSpinner'
+import AbacusGameColumnTable from '@/components/Trainer/AbacusGameColumnTable'
 import AnswerForm from '@/components/Trainer/AnswerForm'
 import SoundNumbers from '@/services/sound'
 
@@ -58,6 +60,7 @@ export default {
   name: 'AbacusGameOutput',
   components: {
     CountDownSpinner,
+    AbacusGameColumnTable,
     AnswerForm,
   },
   props: {
@@ -77,6 +80,7 @@ export default {
   },
   data() {
     return {
+      columns: false,
       timeout: null,
       answer: null,
       answerKey: 0,
@@ -155,7 +159,6 @@ export default {
     },
     prepare() {
       this.answer = calcAnswer(this.numbers)
-      console.log(this.answer, this.numbers)
       this.sounds = new SoundNumbers(this.numbers, this.lang)
     },
     async restart() {
