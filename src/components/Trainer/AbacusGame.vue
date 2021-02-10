@@ -10,7 +10,7 @@
         <AbacusGameOutput
             v-if="status > 0"
             ref="output"
-            :numbers="nums"
+            :numbers="exercise"
             :delay="timeInterval"
         />
         <AbacusGameSettings
@@ -38,6 +38,10 @@ import AbacusGameSettings from './AbacusGameSettings'
 import AbacusGameOutput from './AbacusGameOutput'
 import AbacusGameControls from './AbacusGameControls'
 
+function getRandomInt(min, max) {
+  return  Math.floor( Math.random() * (max - min + 1)) + min
+}
+
 export default {
   name: 'AbacusGame',
   components: {
@@ -47,7 +51,7 @@ export default {
   },
   data() {
     return {
-      nums: [1,2],
+      exercise: [],
     }
   },
   computed: {
@@ -63,12 +67,19 @@ export default {
   },
   methods: {
     start() {
+      this.prepareGameArray()
       this.$store.dispatch('setGameStatus', 1).then(() =>{
         this.$refs.output.start()
       })
     },
     prepareGameArray() {
       const exercises = this.$store.getters.exercises(this.settings.categoryId)
+      const randomExercise = getRandomInt(1, exercises.length) - 1
+      this.$store.dispatch('updateGameSettings', {
+        exerciseId: exercises[randomExercise].id
+      })
+      const exercise = this.$store.getters.getExercise(this.settings.categoryId, exercises[randomExercise].id)
+      this.exercise = exercise.slice(0, this.settings.amountOfNumbers)
     }
   },
 }

@@ -74,9 +74,13 @@ export default {
             text: cat.name
           }
         })
-        this.categoryId = list[0].value
+        if (!list.some(c => c.value === this.categoryId)) {
+          this.categoryId = list[0].value
+          this.updateSettings()
+        }
         return list
       } else {
+        this.categoryId = ''
         return [{
           value: '',
           text: 'Нет упражнений'

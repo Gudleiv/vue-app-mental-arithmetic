@@ -215,5 +215,12 @@ export default {
         return category.exercises
       }
     },
+    getExercise(state) {
+      return (catId, exId) => {
+        const category = state.categories.find(cat => cat.id === catId)
+        const exercise = category.exercises.find(ex => ex.id === exId)
+        return exercise.data.split(',').map(e => parseInt(e))
+      }
+    }
   },
 }

@@ -155,6 +155,7 @@ export default {
     },
     prepare() {
       this.answer = calcAnswer(this.numbers)
+      console.log(this.answer)
       this.sounds = new SoundNumbers(this.numbers, this.lang)
     },
     async restart() {
