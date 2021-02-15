@@ -10,7 +10,7 @@ export default {
       categoryId: null,
       exerciseId: null
     },
-    status: 0
+    gameStatus: 0,
     /*
     * >1 - on game
     * 10 - on count up spinner
@@ -20,6 +20,7 @@ export default {
     * 30 - on output
     * 40 - on answer form
     */
+    gameType: 'default'
   },
   mutations: {
     SET_SETTING_AMOUNTNUMS(state, payload) {
@@ -40,8 +41,11 @@ export default {
     SET_SETTING_EXID(state, payload) {
       state.settings.exerciseId = payload
     },
-    SET_STATUS_GAME(state, payload) {
-      state.status = payload
+    SET_GAME_STATUS(state, payload) {
+      state.gameStatus = payload
+    },
+    SET_GAME_TYPE(state, payload) {
+      state.gameType = payload
     },
   },
   actions: {
@@ -91,7 +95,10 @@ export default {
       }
     },
     setGameStatus({commit}, payload) {
-      commit('SET_STATUS_GAME', payload)
+      commit('SET_GAME_STATUS', payload)
+    },
+    setGameType({commit}, payload) {
+      commit('SET_GAME_TYPE', payload)
     }
   },
   getters: {
@@ -105,7 +112,10 @@ export default {
       }
     },
     getGameStatus(state) {
-      return state.status
+      return state.gameStatus
+    },
+    getGameType(state) {
+      return state.gameType
     }
   }
 }

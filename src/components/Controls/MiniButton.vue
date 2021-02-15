@@ -42,10 +42,11 @@ export default {
 }
 
 .button-text {
-  padding: 0 0.5rem;
+  padding: 0 0.5rem 2px;
   width: auto;
 }
 
 .icon-text {
+  margin: 0 4px;
 }
 </style>

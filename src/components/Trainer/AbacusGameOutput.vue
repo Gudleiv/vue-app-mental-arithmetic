@@ -5,32 +5,17 @@
         ref="countdown"
         :counts="2"
     ></count-down-spinner>
-    <svg
-        style="overflow:visible"
+    <AbacusGameOutputColumnTable
+        v-if="gameType === 'column'"
         v-show="status === 30"
-        viewBox="0 0 100 100">
-      <line x1="44" y1="63" x2="55" y2="63" style="stroke:rgba(128,128,128,.2);stroke-width:1"/>
-      <text
-          class="output-text"
-          x="43%"
-          y="50%"
-          text-anchor="end"
-          dy=".3em"
-      >{{ aboveZero ? '' : '-' }}
-      </text>
-      <transition name="fade">
-        <text
-            class="output-text text"
-            :key="numberKey"
-            x="43%"
-            y="50%"
-            text-anchor="start"
-            dy=".3em"
-        >{{ number }}
-        </text>
-      </transition>
-    </svg>
-    <div v-show="status === 40" >
+        ref="column"
+        :items="numbers"/>
+    <AbacusGameOutputNumber
+        v-else
+        v-show="status === 30"
+        :number="number"
+        :numberKey="numberKey"/>
+    <div v-show="status === 40">
       <div style="height:300px" class="d-flex align-items-center justify-content-center">
         <div class="col-8">
           <AnswerForm
@@ -47,6 +32,8 @@
 
 <script>
 import CountDownSpinner from '@/components/CountDownSpinner'
+import AbacusGameOutputColumnTable from '@/components/Trainer/AbacusGameOutputColumnTable'
+import AbacusGameOutputNumber from '@/components/Trainer/AbacusGameOutputNumber'
 import AnswerForm from '@/components/Trainer/AnswerForm'
 import SoundNumbers from '@/services/sound'
 
@@ -58,6 +45,8 @@ export default {
   name: 'AbacusGameOutput',
   components: {
     CountDownSpinner,
+    AbacusGameOutputColumnTable,
+    AbacusGameOutputNumber,
     AnswerForm,
   },
   props: {
@@ -97,16 +86,23 @@ export default {
       },
       set(value) {
         this.$store.dispatch('setGameStatus', value)
-      }
+      },
+    },
+    gameType() {
+      return this.$store.getters.getGameType
     }
   },
   watch: {
     status(value) {
       switch (value) {
-        case 20: this.restart(); break;
-        case 22: this.end(); break;
+        case 20:
+          this.restart()
+          break
+        case 22:
+          this.end()
+          break
       }
-    }
+    },
   },
   methods: {
     drawGame() {

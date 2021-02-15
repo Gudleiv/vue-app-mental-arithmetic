@@ -22,7 +22,7 @@
                 variant="outline-info"
                 style="margin-right:12px"
                 size="lg"
-                @click="start"
+                @click="start('column')"
             >Столбиком
             </b-button>
             <b-button
@@ -30,7 +30,7 @@
                 variant="primary"
                 style="width:8rem"
                 size="lg"
-                @click="start"
+                @click="start('default')"
             >Форсаж
             </b-button>
           </div>
@@ -72,9 +72,10 @@ export default {
     },
   },
   methods: {
-    start() {
+    start(gameType = 'default') {
       this.prepareGameArray()
           .then(() => {
+            this.$store.dispatch('setGameType', gameType)
             this.$store.dispatch('setGameStatus', 1)
           })
           .then(() => {

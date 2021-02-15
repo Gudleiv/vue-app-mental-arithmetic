@@ -8,7 +8,6 @@ import SignUp from '@/components/Auth/SignUp'
 import Profile from '@/components/Profile/Profile'
 import Abacus from '@/components/Trainer/Abacus'
 import AbacusGame from '@/components/Trainer/AbacusGame'
-import AbacusGameColumns from '@/components/Trainer/AbacusGameColumns'
 import AbacusExercises from '@/components/Trainer/AbacusExercises'
 
 Vue.use(VueRouter);

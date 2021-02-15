@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import user from './user'
 import shared from './shared'
 import exercises from './exercises'
-import trainer from './trainer'
+import game from './game'
 
 Vue.use(Vuex)
 
@@ -18,6 +18,6 @@ export default new Vuex.Store({
     user,
     shared,
     exercises,
-    trainer
+    game
   },
 });
