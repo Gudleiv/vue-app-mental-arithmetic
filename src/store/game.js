@@ -119,8 +119,8 @@ export default {
       if (!payload) {
         // Шаговое изменеие громкости
         const volume = getters.getGameSetting(DEF.volume)
-        console.log('get vol', volume)
-        let newVolume = 0
+        let newVolume = 1
+        let mute = false
         if (volume === 0) {
           newVolume = 0.25
         } else if (volume === 0.25) {
@@ -131,8 +131,9 @@ export default {
           newVolume = 1
         } else {
           newVolume = 0
+          mute = true
         }
-        dispatch('updateGameSettings', { volume: newVolume })
+        dispatch('updateGameSettings', { volume: newVolume, muteSound: mute })
       }
     },
 

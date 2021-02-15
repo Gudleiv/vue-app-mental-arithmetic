@@ -1,7 +1,7 @@
 <template>
   <div class="col-lg-8 col-md-10 mx-auto">
     <count-down-spinner
-        v-show="status === 10"
+        v-show="status >= 10 & status < 20"
         ref="countdown"
         :counts="2"
     ></count-down-spinner>
@@ -72,7 +72,6 @@ export default {
       answerKey: 0,
       number: null,
       numberKey: 0,
-      aboveZero: true,
       sounds: null,
     }
   },
@@ -111,8 +110,7 @@ export default {
         const next = () => {
           const num = array.shift()
           if (array.length) this.sounds.preLoadSound(array[0])
-          if (!this.settings.muteSound) this.sounds.playSound(num, 0.7)
-          this.aboveZero = num > 0
+          if (!this.settings.muteSound) this.sounds.playSound(num, this.settings.volume)
           this.number = Math.abs(num)
           this.numberKey++
           clearTimeout(this.timeout)
@@ -132,6 +130,7 @@ export default {
       this.prepare()
       this.status = 10
       await this.$refs.countdown.prepare(startToBeginTime)
+      this.status = 11
       await this.$refs.countdown.start()
       this.status = 30
       await this.drawGame()

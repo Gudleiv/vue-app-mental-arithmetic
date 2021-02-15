@@ -1,7 +1,10 @@
 <template>
   <b-button
       :class="['button', { 'button-text': text}]"
-      :style="{ 'flexDirection': !reverse ? 'row-reverse' : 'row'}"
+      :style="[
+          { 'flexDirection': !reverse ? 'row-reverse' : 'row'},
+          { 'border': !fill ? '' : `${fill}px solid white`}
+      ]"
       size="sm"
       pill
       v-on="$listeners"
@@ -27,6 +30,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    fill: {
+      default: 0
+    }
   }
 }
 </script>
@@ -39,6 +45,10 @@ export default {
   padding: 0;
   width: 2.5rem;
   height: 2.5rem;
+}
+
+.button[disabled] {
+  border: 0;
 }
 
 .button-text {

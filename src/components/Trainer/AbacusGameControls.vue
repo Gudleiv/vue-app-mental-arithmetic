@@ -2,10 +2,22 @@
   <div class="abacus-game-controls">
     <mini-button @click="restartGameWithNewType('column')" v-if="gameType !== 'column' & status === 40" icon="grip-vertical" text="Столбиком" variant="primary"></mini-button>
     <mini-button @click="restartGameWithNewType('default')" v-if="gameType !== 'default' & status === 40" icon="fullscreen-exit" text="Форсаж" variant="primary"></mini-button>
-    <mini-button @click="restartGame" v-if="status > 0" :disabled="status < 20" icon="arrow-clockwise" variant="outline-primary"></mini-button>
-    <mini-button @click="toggleSound" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
-    <mini-button @click="volumeStep" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-danger' : 'danger'"></mini-button>
-    <mini-button @click="cancelGame" v-if="status !== 0" icon="x" variant="outline-danger"></mini-button>
+    <mini-button @click="restartGame" v-if="status > 0" :disabled="status <= 20" icon="arrow-clockwise" variant="outline-primary"></mini-button>
+<!--    <mini-button @click="toggleSound" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>-->
+    <mini-button
+        @click="volumeStep"
+        v-b-tooltip.hover.bottom :title="`Громкость: ${volume*100}% `"
+        v-if="true"
+        :icon="mute ? 'volume-mute' : 'volume-up-fill'"
+        :variant="mute ? 'outline-secondary' : 'primary'"
+        :fill="10 - (volume * 10)"
+    ></mini-button>
+    <mini-button
+        @click="cancelGame"
+        :disabled="status <= 10"
+        icon="x"
+        variant="outline-danger"
+    ></mini-button>
 
   </div>
 </template>
@@ -32,9 +44,7 @@ export default {
       return this.$store.getters.getGameSetting('muteSound')
     },
     volume() {
-      const a = this.$store.getters.getGameSetting('volume')
-      console.log('volume:', a)
-      return a
+      return this.$store.getters.getGameSetting('volume')
     },
   },
   methods: {
