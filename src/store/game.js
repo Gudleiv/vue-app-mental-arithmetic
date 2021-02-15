@@ -1,16 +1,11 @@
 import firebase from '@/firebase'
 
-export default {
-  state: {
-    settings: {
-      amountOfNumbers: 6,
-      timeInterval: 1.7,
-      digitNumber: 1,
-      muteSound: false,
-      categoryId: null,
-      exerciseId: null
-    },
-    gameStatus: 0,
+const DEF = {
+  GAMETYPES: {
+    default: 'default',
+    column: 'column',
+  },
+  GAMESTATUS: {
     /*
     * >1 - on game
     * 10 - on count up spinner
@@ -20,25 +15,50 @@ export default {
     * 30 - on output
     * 40 - on answer form
     */
-    gameType: 'default'
+  },
+  amountOfNumbers: 'amountOfNumbers',
+  timeInterval: 'timeInterval',
+  digitNumber: 'digitNumber',
+  muteSound: 'muteSound',
+  volume: 'volume',
+  categoryId: 'categoryId',
+  exerciseId: 'exerciseId',
+}
+
+export default {
+  state: {
+    settings: {
+      amountOfNumbers: 6,
+      timeInterval: 1.7,
+      digitNumber: 1,
+      muteSound: false,
+      volume: 0.75,
+      categoryId: null,
+      exerciseId: null,
+    },
+    gameStatus: 0,
+    gameType: DEF.GAMETYPES.default,
   },
   mutations: {
-    SET_SETTING_AMOUNTNUMS(state, payload) {
+    SET_SETTING_AMOUNTOFNUMBERS(state, payload) {
       state.settings.amountOfNumbers = payload
     },
-    SET_SETTING_INTERVAL(state, payload) {
+    SET_SETTING_TIMEINTERVAL(state, payload) {
       state.settings.timeInterval = payload
     },
-    SET_SETTING_DNUMBER(state, payload) {
+    SET_SETTING_DIGITNUMBERS(state, payload) {
       state.settings.digitNumbers = payload
     },
     SET_SETTING_MUTESOUND(state, payload) {
       state.settings.muteSound = payload
     },
-    SET_SETTING_CATID(state, payload) {
+    SET_SETTING_VOLUME(state, payload) {
+      state.settings.volume = payload
+    },
+    SET_SETTING_CATEGORYID(state, payload) {
       state.settings.categoryId = payload
     },
-    SET_SETTING_EXID(state, payload) {
+    SET_SETTING_EXERCISEID(state, payload) {
       state.settings.exerciseId = payload
     },
     SET_GAME_STATUS(state, payload) {
@@ -49,57 +69,75 @@ export default {
     },
   },
   actions: {
-    fetchGameSettings({commit, dispatch}) {
-      const settings = JSON.parse(localStorage.getItem('settings'))
+    fetchGameSettings({
+      commit,
+      dispatch,
+    }) {
+      const settings = JSON.parse(localStorage.getItem('gameSettings'))
       if (settings && Object.keys(settings).length) {
-        if (
-          has('amountOfNumbers', settings)
+/*        if (
+          has(DEF.amountOfNumbers, settings)
           && settings.amountOfNumbers < 1
           || settings.amountOfNumbers > 100
-        ) return
+        ) {
+          return
+        }
         if (
-          has('timeInterval', settings)
+          has(DEF.timeInterval, settings)
           && settings.timeInterval < 0.5
           || settings.timeInterval > 10
-        ) return
+        ) {
+          return
+        }
         if (
-          has('digitNumber', settings)
+          has(DEF.digitNumber, settings)
           && settings.digitNumber < 1
           || settings.digitNumber > 5
-        ) return
+        ) {
+          return
+        }*/
         dispatch('updateGameSettings', settings)
       }
     },
-    updateGameSettings({commit}, payload) {
-      const settings = JSON.parse(localStorage.getItem('settings'))
-      if (settings) localStorage.setItem('settings', JSON.stringify(Object.assign(settings, payload)))
-      else localStorage.setItem('settings', JSON.stringify(payload))
+    updateGameSettings({ commit }, payload) {
+      const settings = JSON.parse(localStorage.getItem('gameSettings'))
+      if (settings) {
+        // Дополнить существующие настройки
+        localStorage.setItem('gameSettings',
+          JSON.stringify(Object.assign(settings, payload)))
+      } else {
+        // Создать новые настройки
+        localStorage.setItem('gameSettings', JSON.stringify(payload))
+      }
 
-      if (has('amountOfNumbers', payload)) {
-        commit('SET_SETTING_AMOUNTNUMS', payload.amountOfNumbers)
+      if (has(DEF.amountOfNumbers, payload)) {
+        commit('SET_SETTING_AMOUNTOFNUMBERS', payload.amountOfNumbers)
       }
-      if (has('timeInterval', payload)) {
-        commit('SET_SETTING_INTERVAL', payload.timeInterval)
+      if (has(DEF.timeInterval, payload)) {
+        commit('SET_SETTING_TIMEINTERVAL', payload.timeInterval)
       }
-      if (has('digitNumber', payload)) {
-        commit('SET_SETTING_DNUMBER', payload.digitNumber)
+      if (has(DEF.digitNumber, payload)) {
+        commit('SET_SETTING_DIGITNUMBERS', payload.digitNumber)
       }
-      if (has('muteSound', payload)) {
+      if (has(DEF.muteSound, payload)) {
         commit('SET_SETTING_MUTESOUND', payload.muteSound)
       }
-      if (has('categoryId', payload)) {
-        commit('SET_SETTING_CATID', payload.categoryId)
+      if (has(DEF.volume, payload)) {
+        commit('SET_SETTING_VOLUME', payload.muteSound)
       }
-      if (has('exerciseId', payload)) {
-        commit('SET_SETTING_EXID', payload.exerciseId)
+      if (has(DEF.categoryId, payload)) {
+        commit('SET_SETTING_CATEGORYID', payload.categoryId)
+      }
+      if (has(DEF.exerciseId, payload)) {
+        commit('SET_SETTING_EXERCISEID', payload.exerciseId)
       }
     },
-    setGameStatus({commit}, payload) {
+    setGameStatus({ commit }, payload) {
       commit('SET_GAME_STATUS', payload)
     },
-    setGameType({commit}, payload) {
+    setGameType({ commit }, payload) {
       commit('SET_GAME_TYPE', payload)
-    }
+    },
   },
   getters: {
     getGameSettings(state) {
@@ -107,8 +145,11 @@ export default {
     },
     getGameSetting(state) {
       return name => {
-        if (state.settings.hasOwnProperty(name)) return state.settings[name]
-        else throw new Error(`Property ${name} in state.settings not found`)
+        if (state.settings.hasOwnProperty(name)) {
+          return state.settings[name]
+        } else {
+          throw new Error(`Property ${name} in state.settings not found`)
+        }
       }
     },
     getGameStatus(state) {
@@ -116,14 +157,14 @@ export default {
     },
     getGameType(state) {
       return state.gameType
-    }
-  }
+    },
+  },
 }
 
 function has(prop, obj) {
   if (!obj.hasOwnProperty(prop)) return false
   if (typeof obj[prop] === 'boolean') return true
-  return !!obj[prop];
+  return !!obj[prop]
 }
 
 // = if payload has new data
