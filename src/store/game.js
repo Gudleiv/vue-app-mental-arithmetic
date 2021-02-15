@@ -44,7 +44,7 @@ export default {
       state.settings.amountOfNumbers = payload
     },
     SET_SETTING_TIMEINTERVAL(state, payload) {
-      state.settings.timeInterval = payload
+      state.settings.timeInterval = parseFloat(payload)
     },
     SET_SETTING_DIGITNUMBERS(state, payload) {
       state.settings.digitNumbers = payload
@@ -53,7 +53,7 @@ export default {
       state.settings.muteSound = payload
     },
     SET_SETTING_VOLUME(state, payload) {
-      state.settings.volume = payload
+      state.settings.volume = parseFloat(payload)
     },
     SET_SETTING_CATEGORYID(state, payload) {
       state.settings.categoryId = payload
@@ -75,27 +75,6 @@ export default {
     }) {
       const settings = JSON.parse(localStorage.getItem('gameSettings'))
       if (settings && Object.keys(settings).length) {
-/*        if (
-          has(DEF.amountOfNumbers, settings)
-          && settings.amountOfNumbers < 1
-          || settings.amountOfNumbers > 100
-        ) {
-          return
-        }
-        if (
-          has(DEF.timeInterval, settings)
-          && settings.timeInterval < 0.5
-          || settings.timeInterval > 10
-        ) {
-          return
-        }
-        if (
-          has(DEF.digitNumber, settings)
-          && settings.digitNumber < 1
-          || settings.digitNumber > 5
-        ) {
-          return
-        }*/
         dispatch('updateGameSettings', settings)
       }
     },
@@ -110,28 +89,53 @@ export default {
         localStorage.setItem('gameSettings', JSON.stringify(payload))
       }
 
-      if (has(DEF.amountOfNumbers, payload)) {
+      if (payload.hasOwnProperty(DEF.amountOfNumbers)) {
         commit('SET_SETTING_AMOUNTOFNUMBERS', payload.amountOfNumbers)
       }
-      if (has(DEF.timeInterval, payload)) {
+      if (payload.hasOwnProperty(DEF.timeInterval)) {
         commit('SET_SETTING_TIMEINTERVAL', payload.timeInterval)
       }
-      if (has(DEF.digitNumber, payload)) {
+      if (payload.hasOwnProperty(DEF.digitNumber)) {
         commit('SET_SETTING_DIGITNUMBERS', payload.digitNumber)
       }
-      if (has(DEF.muteSound, payload)) {
+      if (payload.hasOwnProperty(DEF.muteSound)) {
         commit('SET_SETTING_MUTESOUND', payload.muteSound)
       }
-      if (has(DEF.volume, payload)) {
-        commit('SET_SETTING_VOLUME', payload.muteSound)
+      if (payload.hasOwnProperty(DEF.volume)) {
+        commit('SET_SETTING_VOLUME', payload.volume)
       }
-      if (has(DEF.categoryId, payload)) {
+      if (payload.hasOwnProperty(DEF.categoryId)) {
         commit('SET_SETTING_CATEGORYID', payload.categoryId)
       }
-      if (has(DEF.exerciseId, payload)) {
+      if (payload.hasOwnProperty(DEF.exerciseId)) {
         commit('SET_SETTING_EXERCISEID', payload.exerciseId)
       }
     },
+
+    updateVolume({
+      getters,
+      dispatch,
+    }, payload) {
+      if (!payload) {
+        // Шаговое изменеие громкости
+        const volume = getters.getGameSetting(DEF.volume)
+        console.log('get vol', volume)
+        let newVolume = 0
+        if (volume === 0) {
+          newVolume = 0.25
+        } else if (volume === 0.25) {
+          newVolume = 0.5
+        } else if (volume === 0.5) {
+          newVolume = 0.75
+        } else if (volume === 0.75) {
+          newVolume = 1
+        } else {
+          newVolume = 0
+        }
+        dispatch('updateGameSettings', { volume: newVolume })
+      }
+    },
+
     setGameStatus({ commit }, payload) {
       commit('SET_GAME_STATUS', payload)
     },
@@ -159,12 +163,6 @@ export default {
       return state.gameType
     },
   },
-}
-
-function has(prop, obj) {
-  if (!obj.hasOwnProperty(prop)) return false
-  if (typeof obj[prop] === 'boolean') return true
-  return !!obj[prop]
 }
 
 // = if payload has new data

@@ -4,7 +4,7 @@
     <mini-button @click="restartGameWithNewType('default')" v-if="gameType !== 'default' & status === 40" icon="fullscreen-exit" text="Форсаж" variant="primary"></mini-button>
     <mini-button @click="restartGame" v-if="status > 0" :disabled="status < 20" icon="arrow-clockwise" variant="outline-primary"></mini-button>
     <mini-button @click="toggleSound" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
-    <mini-button @click="volumeStep" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>
+    <mini-button @click="volumeStep" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-danger' : 'danger'"></mini-button>
     <mini-button @click="cancelGame" v-if="status !== 0" icon="x" variant="outline-danger"></mini-button>
 
   </div>
@@ -31,6 +31,11 @@ export default {
     mute() {
       return this.$store.getters.getGameSetting('muteSound')
     },
+    volume() {
+      const a = this.$store.getters.getGameSetting('volume')
+      console.log('volume:', a)
+      return a
+    },
   },
   methods: {
     restartGame() {
@@ -47,7 +52,7 @@ export default {
       this.$store.dispatch('updateGameSettings', { muteSound: !this.mute})
     },
     volumeStep() {
-      this.$store.dispatch('updateGameSettings', { muteSound: !this.mute})
+      this.$store.dispatch('updateVolume')
     },
   }
 }

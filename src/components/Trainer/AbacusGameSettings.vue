@@ -92,7 +92,7 @@ export default {
     updateSettings() {
       const settings = {
         amountOfNumbers: this.amountOfNumbers,
-        timeInterval: this.timeInterval,
+        timeInterval: +this.timeInterval,
         digitNumber: this.digitNumber,
         categoryId: this.categoryId
       }
