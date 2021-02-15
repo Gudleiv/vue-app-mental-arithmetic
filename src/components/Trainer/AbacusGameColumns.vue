@@ -7,7 +7,7 @@
             <AbacusGameControls/>
           </div>
         </div>
-        <AbacusGameOutput
+        <AbacusGameColumnsOutput
             v-if="status > 0"
             ref="output"
             :numbers="exercise"
@@ -21,7 +21,7 @@
           <div class="d-flex justify-content-end">
             <b-button
                 v-show="status === 0"
-                variant="primary"
+                variant="danger"
                 style="width:8rem"
                 size="lg"
                 @click="start"
@@ -36,7 +36,7 @@
 
 <script>
 import AbacusGameSettings from './AbacusGameSettings'
-import AbacusGameOutput from './AbacusGameOutput'
+import AbacusGameColumnsOutput from './AbacusGameColumnsOutput'
 import AbacusGameControls from './AbacusGameControls'
 
 function getRandomInt(min, max) {
@@ -47,7 +47,7 @@ export default {
   name: 'AbacusGame',
   components: {
     AbacusGameSettings,
-    AbacusGameOutput,
+    AbacusGameColumnsOutput,
     AbacusGameControls,
   },
   data() {

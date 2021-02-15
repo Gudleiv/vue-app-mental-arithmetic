@@ -19,6 +19,7 @@
                            inline></b-form-spinbutton>
       </b-form-group>
       <b-form-group
+          v-if="false"
           label-cols-md="5"
           content-cols-md="7"
           label="Разряд:"
@@ -27,7 +28,7 @@
         <b-form-spinbutton wrap min="1" max="3" @change="updateSettings" id="input-3" v-model="digitNumber"
                            inline></b-form-spinbutton>
       </b-form-group>
-      <b-form-group v-if="gameType === 'default'"
+      <b-form-group
           label-cols-md="5"
           content-cols-md="7"
           label="Интервал:"
@@ -53,12 +54,6 @@ export default {
   },
 
   name: 'AbacusGameSettings',
-  props: {
-    gameType: {
-      type: String,
-      default: 'default'
-    }
-  },
   data() {
     return {
       categoryId: '',

@@ -16,18 +16,24 @@
         <AbacusGameSettings
             v-show="status === 0"
         />
-        <div>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end mt-5">
+            <b-button
+                v-show="status === 0"
+                variant="outline-info"
+                style="margin-right:12px"
+                size="lg"
+                @click="start"
+            >Столбиком
+            </b-button>
             <b-button
                 v-show="status === 0"
                 variant="primary"
                 style="width:8rem"
                 size="lg"
                 @click="start"
-            >Старт
+            >Форсаж
             </b-button>
           </div>
-        </div>
       </div>
     </div>
   </div>

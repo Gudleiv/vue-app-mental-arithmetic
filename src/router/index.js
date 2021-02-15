@@ -10,7 +10,6 @@ import Abacus from '@/components/Trainer/Abacus'
 import AbacusGame from '@/components/Trainer/AbacusGame'
 import AbacusGameColumns from '@/components/Trainer/AbacusGameColumns'
 import AbacusExercises from '@/components/Trainer/AbacusExercises'
-import AbacusExercisesEditor from '@/components/Trainer/AbacusExercisesEditor'
 
 Vue.use(VueRouter);
 
@@ -46,7 +45,7 @@ const routes = [
     }
   },
   {
-    redirect: '/abacus/',
+    redirect: '/abacus/game',
     path: '/abacus',
     name: 'Abacus',
     component: Abacus,
@@ -55,14 +54,9 @@ const routes = [
     },
     children: [
       {
-        path: '',
+        path: 'game',
         name: 'AbacusGame',
         component: AbacusGame,
-      },
-      {
-        path: 'column',
-        name: 'AbacusGameColumns',
-        component: AbacusGameColumns
       },
       {
         path: 'exercises',

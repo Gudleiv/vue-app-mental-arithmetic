@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: 'AbacusGameColumnTable',
+  name: 'AbacusGameColumnsOutput',
   props: {
     items: {
       type: Array,
