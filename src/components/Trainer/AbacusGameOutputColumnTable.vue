@@ -1,5 +1,5 @@
 <template>
-<div class="col-md-9 mx-auto d-flex" :class="{'column-table-space': !ended}">
+<div class="col-md-9 mx-auto d-flex column-table" :class="{'column-table-space': !ended}">
   <b-table
       id="column-table"
       ref="table"
@@ -77,17 +77,12 @@ export default {
     },
     next() {
       this.add()
-      const scroll = this.$refs.table.$el.scrollHeight
-      // const scroll = this.$refs.table.$el.offsetHeight + this.$refs.table.$el.offsetTop
       this.$nextTick(() => {
         const row = this.$refs.table.$el.children[1].children[this.counter - 1]
         row.scrollIntoView({
           block: 'center',
         });
       })
-
-      window.scrollTo(0, scroll)
-
     },
     rowClass(item, type) {
       if (item.N === this.items.length) return 'column-table-tr column-table-tr-last'
@@ -112,7 +107,7 @@ export default {
 }
 
 .column-table-tr-last {
-  box-shadow: 1px 1px 3px lightgray;
+  box-shadow: 0px 1px 2px lightgray;
 }
 
 .column-table-td {
@@ -136,7 +131,6 @@ export default {
   width: 100%;
   display: flex;
   padding: 0 5%;
-
 }
 
 .column-table-td-number-sign {
@@ -153,7 +147,11 @@ export default {
   width: 25%;
 }
 
+.column-table {
+  transition: padding-bottom 0.8s ease;
+}
+
 .column-table-space {
-  padding-bottom: 75vh;
+  padding-bottom: 100vh;
 }
 </style>
