@@ -53,6 +53,7 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+      <!--
       <div class="row">
         <div class="col">
           <b-form-group label="Тип учетной записи" disabled>
@@ -63,11 +64,20 @@
           </b-form-group>
         </div>
       </div>
+      -->
       <div class="row justify-content-end">
         <div class="col-auto">
-          <b-button type="submit" variant="primary"
-            >Зарегистрироваться</b-button
+          <b-overlay
+              :show="loading"
+              rounded="sm"
+              opacity="0.6"
+              spinner-small
+              spinner-variant="primary"
+              class="d-inline-block"
           >
+            <b-button type="submit" variant="primary" :disabled="loading">Зарегистрироваться</b-button>
+          </b-overlay>
+
         </div>
       </div>
     </b-form>
@@ -109,6 +119,11 @@ export default {
       type: ''
     }
   },
+  computed: {
+    loading() {
+      return this.$store.getters.loading
+    },
+  },
   methods: {
     onSubmit() {
       if (!this.$v.$invalid) {
@@ -116,7 +131,6 @@ export default {
           email: this.email,
           password: this.password,
           name: this.name,
-          //type: this.type
         }
         this.$store.dispatch('registerUser', user)
           .then(() => {
