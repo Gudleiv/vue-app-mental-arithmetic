@@ -6,10 +6,9 @@
       <b-navbar-nav>
         <b-nav-item active-class="active" :to="{ name: 'AbacusGame'}">Тренировка</b-nav-item>
         <b-nav-item active-class="active" :to="{ name: 'AbacusExercises'}">Упражнения</b-nav-item>
-        <b-nav-item active-class="active" disabled to="/multiplication">Умножения</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">Профиль</b-nav-item>
+        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">Настройки</b-nav-item>
         </li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
         <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>

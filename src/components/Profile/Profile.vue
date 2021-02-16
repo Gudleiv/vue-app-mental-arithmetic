@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-2">
         <div class="text-center">
-          <b-avatar variant="primary" text="Г" size="5rem" class="mt-4"></b-avatar>
+          <b-avatar variant="primary" :text="userDisplayName[0]" size="5rem" class="mt-4"></b-avatar>
           <div class="mx-auto mt-3 font-weight-bold">{{ userDisplayName }}</div>
         </div>
       </div>
@@ -11,12 +11,12 @@
         <div>
           <b-card no-body>
             <b-tabs pills card>
-              <b-tab title="Ученики" active>
+              <b-tab title="Параметры" active>
                 <b-card-text>
                   <profile-manage/>
                 </b-card-text>
               </b-tab>
-              <b-tab title="Настройки">
+              <b-tab title="Учетная запись">
                 <b-card-text>
                   <profile-settings/>
                 </b-card-text>
