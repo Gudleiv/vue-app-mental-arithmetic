@@ -26,4 +26,8 @@ $success: #187014;
 $danger: #861c1c;
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
+
+body {
+  overflow-y: scroll;
+}
 </style>

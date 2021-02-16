@@ -5,16 +5,20 @@
         ref="countdown"
         :counts="2"
     ></count-down-spinner>
-    <AbacusGameOutputColumnTable
-        v-if="gameType === 'column'"
-        v-show="status === 30"
-        ref="column"
-        :items="numbers"/>
-    <AbacusGameOutputNumber
-        v-else
-        v-show="status === 30"
-        :number="number"
-        :numberKey="numberKey"/>
+    <template v-if="gameType === 'column'">
+      <AbacusGameOutputColumnTable
+          v-show="status >= 30"
+          ref="column"
+          :items="numbers"
+          :key="gameKey"
+      />
+    </template>
+    <template v-else-if="gameType === 'default'">
+      <AbacusGameOutputNumber
+          v-show="status === 30"
+          :number="number"
+          :numberKey="numberKey"/>
+    </template>
     <div v-show="status === 40">
       <div style="height:300px" class="d-flex align-items-center justify-content-center">
         <div class="col-8">
@@ -66,13 +70,13 @@ export default {
   },
   data() {
     return {
-      columns: false,
       timeout: null,
       answer: null,
       answerKey: 0,
       number: null,
       numberKey: 0,
       sounds: null,
+      gameKey: null,
     }
   },
   computed: {
@@ -89,7 +93,7 @@ export default {
     },
     gameType() {
       return this.$store.getters.getGameType
-    }
+    },
   },
   watch: {
     status(value) {
@@ -111,6 +115,7 @@ export default {
           const num = array.shift()
           if (array.length) this.sounds.preLoadSound(array[0])
           if (!this.settings.muteSound) this.sounds.playSound(num, this.settings.volume)
+          if (this.gameType === 'column') this.$refs.column.addNext()
           this.number = Math.abs(num)
           this.numberKey++
           clearTimeout(this.timeout)
@@ -144,6 +149,7 @@ export default {
       this.number = null
       this.numberKey = 0
       this.answerKey = Date.now()
+      this.gameKey = Date.now()
     },
     end() {
       this.$emit('end')
