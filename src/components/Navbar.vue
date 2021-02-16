@@ -1,6 +1,6 @@
 <template>
   <b-navbar toggleable="md" type="dark" class="navbar" variant="primary">
-    <b-navbar-brand to="/abacus"> {{ name.toUpperCase() }} </b-navbar-brand>
+    <b-navbar-brand to="/"> {{ name.toUpperCase() }} </b-navbar-brand>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
@@ -8,11 +8,11 @@
         <b-nav-item active-class="active" :to="{ name: 'AbacusExercises'}">Упражнения</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item to="/profile">Настройки</b-nav-item>
-        </li>
-        <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
-        <li class="nav-link" v-if="!isUserLoggedIn"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
-        <li class="nav-link" v-if="isUserLoggedIn"><b-nav-item @click="logout">Выход</b-nav-item></li>
+        <template v-if="isUserLoggedIn"><b-nav-item  active-class="active" :to="{ name: 'Profile'}">Настройки</b-nav-item>
+        </template>
+        <li class="nav-link" v-if="isUserLoggedIn === false"><b-button variant="light" :to="{ name: 'SignIn' }">Вход</b-button></li>
+        <li class="nav-link" v-if="isUserLoggedIn === false"><b-button variant="outline-light" :to="{ name: 'SignUp' }">Регистрация</b-button></li>
+        <template v-if="isUserLoggedIn"><b-nav-item @click="logout">Выход</b-nav-item></template>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>

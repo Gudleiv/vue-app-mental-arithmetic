@@ -123,7 +123,8 @@ export default {
       return state.user
     },
     isUserLoggedIn (state) {
-      return state.user != null
+      if (state.user === undefined) return
+      return state.user !== null
     }
   }
 }
