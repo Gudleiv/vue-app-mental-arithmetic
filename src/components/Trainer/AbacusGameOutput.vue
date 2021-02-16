@@ -21,8 +21,8 @@
           :numberKey="numberKey"/>
     </template>
     <div v-show="status === 40">
-      <div style="height:300px" class="d-flex align-items-center justify-content-center">
-        <div class="col-8">
+      <div :style="[gameType === 'default' ? {'height': '420px'} : '']" class="d-flex align-items-center justify-content-center">
+        <div class="col-9">
           <AnswerForm
               :key="answerKey"
               :answer="answer"
@@ -165,7 +165,7 @@ export default {
       this.sounds = new SoundNumbers(this.numbers, this.lang)
     },
     async restart() {
-      await this.start(900)
+      await this.start(700)
     },
   },
   beforeDestroy() {

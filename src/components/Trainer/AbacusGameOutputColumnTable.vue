@@ -1,5 +1,5 @@
 <template>
-<div class="col-md-9 mx-auto" :class="{'column-table-space': !ended}">
+<div class="col-md-9 mx-auto d-flex" :class="{'column-table-space': !ended}">
   <b-table
       id="column-table"
       ref="table"
@@ -49,13 +49,11 @@ export default {
   },
   computed: {
     rowSum() {
-      const array = []
-      this.items.reduce((acc, cv, idx) => {
-        const res = acc + cv
-        array.push(res)
-        return res
-      }, 0)
-      return array
+      let acc = 0
+      return this.items.map((v, idx) => {
+        if (idx === this.items.length - 1) return '?' //Скрыть ответ
+        return acc += v
+      })
     }
   },
   methods: {
@@ -156,6 +154,6 @@ export default {
 }
 
 .column-table-space {
-  padding: 50vh 0;
+  padding-bottom: 75vh;
 }
 </style>

@@ -52,7 +52,7 @@ export default {
 }
 
 .button-text {
-  padding: 0 0.5rem 2px;
+  padding: 0 0.5rem;
   width: auto;
 }
 

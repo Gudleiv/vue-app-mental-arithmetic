@@ -68,14 +68,26 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .abacus-game-controls {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  z-index: 1;
+  background-color: white;
+  border: 1px solid rgba(128,128,128,0.2);
+  border-radius: 32px;
+  padding: 6px;
+  transition: all 0.4s ease;
 }
+
+.abacus-game-controls-fixed {
+  position: fixed;
+  top: 1%;
+  right: 1%;
+}
+
 .abacus-game-controls > button:not(:last-child) {
-  margin-bottom: 6px;
   margin-right: 8px
 }
 </style>
