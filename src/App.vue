@@ -24,6 +24,7 @@ export default {
 $primary: #165aac;
 $success: #187014;
 $danger: #861c1c;
+$info: #2f8391;
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 

@@ -5,7 +5,6 @@
       ref="table"
       hover
       borderless
-      head-variant="primary"
       small
       fixed
       primary-key="N"
@@ -107,7 +106,8 @@ export default {
 }
 
 .column-table-tr-last {
-  box-shadow: 0px 1px 2px lightgray;
+  box-shadow: 0 1px 2px lightgray;
+  background-color: rgba(128,128,128,0.05);
 }
 
 .column-table-td {
