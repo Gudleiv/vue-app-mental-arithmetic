@@ -1,7 +1,7 @@
 <template>
   <div class="abacus-game-controls">
-    <mini-button @click="restartGameWithNewType('column')" v-if="gameType !== 'column' & status === 40" icon="grip-vertical" text="Столбиком" variant="primary"></mini-button>
-    <mini-button @click="restartGameWithNewType('default')" v-if="gameType !== 'default' & status === 40" icon="fullscreen-exit" text="Форсаж" variant="primary"></mini-button>
+    <mini-button @click="restartGameWithNewType('column')" v-if="gameType !== 'column' & status === 40" icon="arrow-clockwise" text="Столбиком" variant="primary"></mini-button>
+    <mini-button @click="restartGameWithNewType('default')" v-if="gameType !== 'default' & status === 40" icon="arrow-clockwise" text="Форсаж" variant="primary"></mini-button>
     <mini-button @click="restartGame" v-if="status > 0" :disabled="status <= 20" icon="arrow-clockwise" variant="outline-primary"></mini-button>
 <!--    <mini-button @click="toggleSound" v-if="true" :icon="mute ? 'volume-mute' : 'volume-up-fill'" :variant="mute ? 'outline-secondary' : 'primary'"></mini-button>-->
     <mini-button

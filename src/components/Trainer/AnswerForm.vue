@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="d-flex">
     <b-input
         @keydown.enter="submit"
         v-on="$listeners"
@@ -13,6 +13,12 @@
         type="number"
         placeholder="Ответ"
     ></b-input>
+    <b-button @click="nextExercise" id="answer-form-btn-next" v-show="disabled" class="ml-2 answer-form-btn-next" size="lg" variant="success">
+      <b-icon icon="arrow-right"></b-icon>
+    </b-button>
+    <b-tooltip target="answer-form-btn-next" :delay="{ show: 600 }" placement="topleft">
+      Следующий пример
+    </b-tooltip>
   </div>
 </template>
 
@@ -51,6 +57,9 @@ export default {
     badAnswer() {
       this.result = 0
     },
+    nextExercise() {
+      this.$emit('next')
+    }
   },
 }
 </script>
@@ -74,6 +83,11 @@ export default {
 .bad {
   animation-name: badAnswerFormAnimation;
   animation-duration: 0.4s;
+}
+
+.answer-form-btn-next {
+  /*background-color: #49992b;*/
+  transition: all .4s ease;
 }
 
 @keyframes rightAnswerFormAnimation {

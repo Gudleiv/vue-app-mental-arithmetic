@@ -22,11 +22,11 @@
     </template>
     <div v-show="status === 40">
       <div :style="[gameType === 'default' ? {'height': '420px'} : '']" class="d-flex align-items-center justify-content-center">
-        <div class="col-9">
+        <div class="col-md-9">
           <AnswerForm
               :key="answerKey"
               :answer="answer"
-              @end="end"
+              @next="nextGame"
               ref="answer"
           />
         </div>
@@ -159,6 +159,9 @@ export default {
     end() {
       this.$emit('end')
       this.$destroy()
+    },
+    nextGame() {
+      this.$parent.start(this.gameType)
     },
     prepare() {
       this.answer = calcAnswer(this.numbers)
