@@ -60,6 +60,7 @@ export default {
   text-align: center;
   height: 4.5rem;
   font-size: 2.5rem;
+  font-family: 'Nanum Gothic Coding', monospace;
 }
 
 .right {

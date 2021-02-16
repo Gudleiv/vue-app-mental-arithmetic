@@ -19,7 +19,7 @@
           y="50%"
           text-anchor="start"
           dy=".3em"
-      >{{ number }}
+      >{{ num }}
       </text>
     </transition>
   </svg>
@@ -29,14 +29,13 @@
 export default {
   name: 'AbacusGameOutputNumber',
   props: ['number', 'numberKey'],
-  data() {
-    return {
-      aboveZero: this.number > 0
-    }
-  },
-  watch: {
-    number(nV, oV) {
-      this.aboveZero = nV > 0
+  computed: {
+    num() {
+      if (!this.number) return '' // Появление при рендере в первые несколько мс
+      return Math.abs(this.number)
+    },
+    aboveZero() {
+      return this.number >= 0
     }
   }
 }

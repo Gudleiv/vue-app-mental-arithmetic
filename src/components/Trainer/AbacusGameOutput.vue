@@ -11,6 +11,7 @@
           ref="column"
           :items="numbers"
           :key="gameKey"
+          @end="toFinish"
       />
     </template>
     <template v-else-if="gameType === 'default'">
@@ -115,8 +116,8 @@ export default {
           const num = array.shift()
           if (array.length) this.sounds.preLoadSound(array[0])
           if (!this.settings.muteSound) this.sounds.playSound(num, this.settings.volume)
-          if (this.gameType === 'column') this.$refs.column.addNext()
-          this.number = Math.abs(num)
+          if (this.gameType === 'column') this.$refs.column.next()
+          this.number = num
           this.numberKey++
           clearTimeout(this.timeout)
           this.timeout = setTimeout(() => {
@@ -139,8 +140,7 @@ export default {
       await this.$refs.countdown.start()
       this.status = 30
       await this.drawGame()
-      this.status = 40
-      this.$refs.answer.focus()
+      this.toFinish()
     },
     clear() {
       clearTimeout(this.timeout)
@@ -150,6 +150,11 @@ export default {
       this.numberKey = 0
       this.answerKey = Date.now()
       this.gameKey = Date.now()
+    },
+    toFinish() {
+      clearTimeout(this.timeout)
+      this.status = 40
+      this.$refs.answer.focus()
     },
     end() {
       this.$emit('end')
