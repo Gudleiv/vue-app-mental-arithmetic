@@ -3,18 +3,21 @@ class SoundNumbers {
     this.numbers = [...new Set(numbers)]
     this.lang = language
     this.sounds = {}
+    this.sound = null
     this.preLoadSound(numbers[0])
   }
 
   getSound(num) {
+    // Для повторяющегося числа, иначе число не озвучится
+    if (this.sound === this.sounds[num]) return this.sound.cloneNode()
     return this.sounds[num]
   }
 
   playSound(num, volume = 0.5, playbackRate = 1) {
-    const sound = this.getSound(num)
-    sound.volume = volume
-    sound.playbackRate = playbackRate
-    sound.play()
+    this.sound = this.getSound(num)
+    this.sound.volume = volume
+    this.sound.playbackRate = playbackRate
+    this.sound.play()
   }
 
   preLoadSounds() {
