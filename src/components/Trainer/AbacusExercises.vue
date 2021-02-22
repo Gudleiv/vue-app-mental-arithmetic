@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="row row-cols-md-2">
+    <div class="row row-cols-md-2 pb-5">
       <div class="col-12 col-md-5 px-4">
         <b-navbar class="px-0">
           <b-nav pills vertical style="width:100%">

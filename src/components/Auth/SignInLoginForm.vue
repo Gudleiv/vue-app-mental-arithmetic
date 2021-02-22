@@ -86,7 +86,7 @@ export default {
         this.$store
           .dispatch('loginUser', user)
           .then(() => {
-            this.$router.push('/abacus')
+            this.$router.push({ name: 'Abacus'})
           })
           .catch(() => {})
       } else {
