@@ -104,8 +104,8 @@ export default {
     },
 
     logoutUser({commit}) {
-      firebase.auth().signOut()
       commit('clearUser')
+      firebase.auth().signOut()
     },
     autoLoginUser({commit}, user) {
       commit('setUser', new User(user.uid, user.displayName, user.email))

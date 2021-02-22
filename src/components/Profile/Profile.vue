@@ -41,7 +41,11 @@ export default {
   },
   computed: {
     userDisplayName() {
-      return this.$store.getters.user.name
+      if (this.$store.getters.user) {
+        return this.$store.getters.user.name
+      } else {
+        return ''
+      }
     }
   }
 }
