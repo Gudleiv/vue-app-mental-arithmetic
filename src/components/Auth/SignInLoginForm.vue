@@ -24,9 +24,9 @@
       </b-form-group>
 
       <div class="row justify-content-end">
-        <div class="col mt-2 pl-3">
+<!--        <div class="col mt-2 pl-3">
           <a class="text-secondary" href="#">Забыли пароль?</a>
-        </div>
+        </div>-->
         <div class="col-auto">
           <b-overlay
             :show="loading"
