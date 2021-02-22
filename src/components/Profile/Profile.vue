@@ -11,11 +11,11 @@
         <div>
           <b-card no-body>
             <b-tabs pills card>
-              <b-tab title="Параметры" active>
-                <b-card-text>
-                  <profile-manage/>
-                </b-card-text>
-              </b-tab>
+<!--              <b-tab title="Параметры" active>-->
+<!--                <b-card-text>-->
+<!--                  <profile-manage/>-->
+<!--                </b-card-text>-->
+<!--              </b-tab>-->
               <b-tab title="Учетная запись">
                 <b-card-text>
                   <profile-settings/>

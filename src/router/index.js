@@ -17,6 +17,9 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+    beforeEnter(to, from, next) {
+      skipForUsers(next, 'Abacus')
+    }
   },
   {
     path: '/auth/signin',
@@ -81,10 +84,10 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
-async function skipForUsers(next) {
+async function skipForUsers(next, to = 'Home') {
   const user = await getUserState()
   if (user !== null) {
-    next({ name: 'Home' })
+    next({ name: to })
   } else {
     next()
   }
