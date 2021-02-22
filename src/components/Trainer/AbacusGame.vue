@@ -12,6 +12,7 @@
             ref="output"
             :numbers="exercise"
             :delay="timeInterval"
+            :lang="settings.language"
         />
         <AbacusGameSettings
             v-show="status === 0"

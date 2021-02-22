@@ -114,7 +114,6 @@ export default {
         commit('SET_SETTING_EXERCISEID', payload.exerciseId)
       }
       if (payload.hasOwnProperty(DEF.language)) {
-        console.log(payload.language)
         commit('SET_SETTING_LANGUAGE', payload.language)
       }
     },
