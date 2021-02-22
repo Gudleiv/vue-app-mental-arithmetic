@@ -1,5 +1,3 @@
-import firebase from '@/firebase'
-
 const DEF = {
   GAMETYPES: {
     default: 'default',
@@ -23,6 +21,7 @@ const DEF = {
   volume: 'volume',
   categoryId: 'categoryId',
   exerciseId: 'exerciseId',
+  language: 'language'
 }
 
 export default {
@@ -35,6 +34,7 @@ export default {
       volume: 0.75,
       categoryId: null,
       exerciseId: null,
+      language: 'ru'
     },
     gameStatus: 0,
     gameType: DEF.GAMETYPES.default,
@@ -60,6 +60,9 @@ export default {
     },
     SET_SETTING_EXERCISEID(state, payload) {
       state.settings.exerciseId = payload
+    },
+    SET_SETTING_LANGUAGE(state, payload) {
+      state.settings.language = payload
     },
     SET_GAME_STATUS(state, payload) {
       state.gameStatus = payload
@@ -109,6 +112,10 @@ export default {
       }
       if (payload.hasOwnProperty(DEF.exerciseId)) {
         commit('SET_SETTING_EXERCISEID', payload.exerciseId)
+      }
+      if (payload.hasOwnProperty(DEF.language)) {
+        console.log(payload.language)
+        commit('SET_SETTING_LANGUAGE', payload.language)
       }
     },
 
