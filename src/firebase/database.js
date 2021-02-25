@@ -89,9 +89,21 @@ const addDefaultExercises = async () => {
   try {
     const user = await firebase.getCurrentUser()
     const db = await firebase.database()
-      .ref(`/users/001/`)
-    console.log(db)
-    return db
+      .ref(`/users/001/categories/`)
+      .once('value')
+      .then(async (snapshot) => {
+        const data = snapshot.val()
+        const userData = await firebase.database()
+          .ref(`/users/${user.uid}/categories/`)
+          .once('value')
+          .then((userSnapshot) => {
+            return userSnapshot.val()
+          })
+        const newData = Object.assign(userData, user)
+        await firebase.database()
+          .ref(`/users/${user.uid}/`)
+          .set({ 'categories': newData })
+      })
   } catch (error) {
     throw error
   }
@@ -104,7 +116,6 @@ const resetExercises = async () => {
       .ref(`/users/${user.uid}/`)
       .child('categories')
       .remove()
-    return true
   } catch (error) {
     throw error
   }
@@ -119,5 +130,5 @@ export default {
   updateExercise,
   removeExercise,
   addDefaultExercises,
-  resetExercises
+  resetExercises,
 }

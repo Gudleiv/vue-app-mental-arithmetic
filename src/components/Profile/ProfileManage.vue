@@ -54,7 +54,20 @@ export default {
     addDefaultExercises() {
       this.addDefaultExercisesModal()
           .then(confirm => {
-            if (confirm) console.log('Готово!')
+            if (confirm) {
+              this.$store.dispatch('addDefaultExercises')
+                  .then(() => {
+                    return this.$bvModal.msgBoxOk('Готово!', {
+                      okVariant: 'success',
+                      okTitle: 'Ok',
+                      size: 'md',
+                      buttonSize: 'lg',
+                      centered: true,
+                    })
+                  })
+                  .catch(() => {
+                  })
+            }
           })
     },
     addDefaultExercisesModal() {

@@ -176,15 +176,19 @@ export default {
           throw error
         })
     },
-    addDefaultExercises({commit, dispatch}) {
+    async addDefaultExercises({commit, dispatch}) {
+      commit('setLoading', true)
       commit('clearError')
-      fb.addDefaultExercises()
+      await fb.addDefaultExercises()
         .then(() => {
           dispatch('fetchCategories')
         })
         .catch((error) => {
           commit('setError', error.message)
           throw error
+        })
+        .finally(() => {
+          commit('setLoading', false)
         })
     },
     async resetExercises({commit, dispatch}) {
@@ -193,13 +197,13 @@ export default {
       await fb.resetExercises()
         .then(() => {
           dispatch('fetchCategories')
-          commit('setLoading', false)
-          return true
         })
         .catch((error) => {
-          commit('setLoading', false)
           commit('setError', error.message)
           throw error
+        })
+        .finally(() => {
+          commit('setLoading', false)
         })
     }
   },
