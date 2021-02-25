@@ -51,7 +51,7 @@ const routes = [
     name: 'Abacus',
     component: Abacus,
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
@@ -63,6 +63,9 @@ const routes = [
         path: 'exercises',
         name: 'AbacusExercises',
         component: AbacusExercises,
+        meta: {
+          requiresAuth: true
+        },
       },
     ]
   },

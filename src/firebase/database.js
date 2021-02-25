@@ -14,7 +14,8 @@ const addCategory = async category => {
 
 const getCategories = async () => {
   try {
-    const user = await firebase.getCurrentUser()
+    let user = await firebase.getCurrentUser()
+    if (user == null) { user = {uid: '002'}}
     const db = await firebase.database()
       .ref(`/users/${user.uid}/categories`)
       .once('value')
