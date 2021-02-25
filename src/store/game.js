@@ -27,7 +27,7 @@ const DEF = {
 export default {
   state: {
     settings: {
-      amountOfNumbers: 6,
+      amountOfNumbers: 7,
       timeInterval: 1.7,
       digitNumber: 1,
       muteSound: false,
