@@ -85,6 +85,31 @@ const removeExercise = async (catId, exerciseId) => {
   }
 }
 
+const addDefaultExercises = async () => {
+  try {
+    const user = await firebase.getCurrentUser()
+    const db = await firebase.database()
+      .ref(`/users/001/`)
+    console.log(db)
+    return db
+  } catch (error) {
+    throw error
+  }
+}
+
+const resetExercises = async () => {
+  try {
+    const user = await firebase.getCurrentUser()
+    const db = await firebase.database()
+      .ref(`/users/${user.uid}/`)
+      .child('categories')
+      .remove()
+    return true
+  } catch (error) {
+    throw error
+  }
+}
+
 export default {
   addCategory,
   getCategories,
@@ -92,5 +117,7 @@ export default {
   removeCategory,
   addExercise,
   updateExercise,
-  removeExercise
+  removeExercise,
+  addDefaultExercises,
+  resetExercises
 }

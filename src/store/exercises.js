@@ -176,6 +176,32 @@ export default {
           throw error
         })
     },
+    addDefaultExercises({commit, dispatch}) {
+      commit('clearError')
+      fb.addDefaultExercises()
+        .then(() => {
+          dispatch('fetchCategories')
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
+    },
+    async resetExercises({commit, dispatch}) {
+      commit('setLoading', true)
+      commit('clearError')
+      await fb.resetExercises()
+        .then(() => {
+          dispatch('fetchCategories')
+          commit('setLoading', false)
+          return true
+        })
+        .catch((error) => {
+          commit('setLoading', false)
+          commit('setError', error.message)
+          throw error
+        })
+    }
   },
   getters: {
     categoriesList(state) {

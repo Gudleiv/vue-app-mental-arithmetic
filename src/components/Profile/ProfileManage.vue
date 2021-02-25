@@ -14,7 +14,8 @@
       <b-form class="d-flex flex-column">
         <b-button class="mb-3" size="sm" variant="info" @click="addDefaultExercises">Добавить стандартные упражнения
         </b-button>
-        <b-button variant="danger" size="sm" @click="resetExercises">Сбросить все упражнения</b-button>
+        <b-button :disabled="loading" variant="danger" size="sm" @click="resetExercises">Сбросить все упражнения
+        </b-button>
       </b-form>
     </b-card>
   </div>
@@ -22,12 +23,18 @@
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       languages: [
-        {value: 'ru', text: 'Русский'},
-        {value: 'uk', text: 'Английский'}
-      ]
+        {
+          value: 'ru',
+          text: 'Русский',
+        },
+        {
+          value: 'uk',
+          text: 'Английский',
+        },
+      ],
     }
   },
   computed: {
@@ -36,9 +43,12 @@ export default {
         return this.$store.getters.getGameSetting('language')
       },
       set(nV) {
-        this.$store.dispatch('updateGameSettings', { language: nV})
-      }
-    }
+        this.$store.dispatch('updateGameSettings', { language: nV })
+      },
+    },
+    loading() {
+      return this.$store.getters.loading
+    },
   },
   methods: {
     addDefaultExercises() {
@@ -68,8 +78,22 @@ export default {
     resetExercises() {
       this.resetExercisesModal()
           .then(confirm => {
-            if (confirm) console.log('Готово!')
+            if (confirm) {
+              this.$store.dispatch('resetExercises')
+                  .then(() => {
+                    return this.$bvModal.msgBoxOk('Готово!', {
+                      okVariant: 'success',
+                      okTitle: 'Ok',
+                      size: 'md',
+                      buttonSize: 'lg',
+                      centered: true,
+                    })
+                  })
+                  .catch(() => {
+                  })
+            }
           })
+
     },
     resetExercisesModal() {
       return this.$bvModal.msgBoxConfirm(`Все ваши упражнения и категории будут удалены, вы уверены?`, {
