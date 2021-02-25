@@ -93,13 +93,14 @@ const addDefaultExercises = async () => {
       .once('value')
       .then(async (snapshot) => {
         const data = snapshot.val()
-        const userData = await firebase.database()
+        let userData = await firebase.database()
           .ref(`/users/${user.uid}/categories/`)
           .once('value')
           .then((userSnapshot) => {
             return userSnapshot.val()
           })
-        const newData = Object.assign(userData, user)
+        if (userData == null) userData = {}
+        const newData = Object.assign(userData, data)
         await firebase.database()
           .ref(`/users/${user.uid}/`)
           .set({ 'categories': newData })

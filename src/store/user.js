@@ -36,7 +36,7 @@ export default {
       }
     },
 
-    async registerUser ({commit}, { email, password, name }) {
+    async registerUser ({commit, dispatch}, { email, password, name }) {
       commit('clearError')
       commit('setLoading', true)
 
@@ -47,6 +47,7 @@ export default {
         })
         commit('setUser', new User(user.uid, user.displayName, user.email))
         commit('setLoading', false)
+        await dispatch('addDefaultExercises')
       } catch (error) {
         commit('setLoading', false)
         commit('setError', error.message)
