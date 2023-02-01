@@ -14,6 +14,8 @@
       <b-form class="d-flex flex-column">
         <b-button class="mb-3" size="sm" variant="info" @click="addDefaultExercises">Добавить стандартные упражнения
         </b-button>
+        <b-button class="mb-3" size="sm" variant="info" @click="addDefaultExercisesAndAdditional">Добавить стандартные + дополнительные упражнения
+        </b-button>
         <b-button :disabled="loading" variant="danger" size="sm" @click="resetExercises">Сбросить все упражнения
         </b-button>
       </b-form>
@@ -70,8 +72,27 @@ export default {
             }
           })
     },
-    addDefaultExercisesModal() {
-      return this.$bvModal.msgBoxConfirm(`Добавить стандартные упражнения?`, {
+    addDefaultExercisesAndAdditional() {
+      this.addDefaultExercisesModal(`Добавить стандартные + дополнительные упражнения?`)
+          .then(confirm => {
+            if (confirm) {
+              this.$store.dispatch('addDefaultExercisesAndAdditional')
+                  .then(() => {
+                    return this.$bvModal.msgBoxOk('Готово!', {
+                      okVariant: 'success',
+                      okTitle: 'Ok',
+                      size: 'md',
+                      buttonSize: 'lg',
+                      centered: true,
+                    })
+                  })
+                  .catch(() => {
+                  })
+            }
+          })
+    },
+    addDefaultExercisesModal(text = `Добавить стандартные упражнения?`) {
+      return this.$bvModal.msgBoxConfirm(text, {
         title: `Стандартные упражнения`,
         size: 'md',
         buttonSize: 'sm',

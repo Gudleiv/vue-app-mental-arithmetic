@@ -191,6 +191,21 @@ export default {
           commit('setLoading', false)
         })
     },
+    async addDefaultExercisesAndAdditional({commit, dispatch}) {
+      commit('setLoading', true)
+      commit('clearError')
+      await fb.addDefaultExercisesAndAdditional()
+        .then(() => {
+          dispatch('fetchCategories')
+        })
+        .catch((error) => {
+          commit('setError', error.message)
+          throw error
+        })
+        .finally(() => {
+          commit('setLoading', false)
+        })
+    },
     async resetExercises({commit, dispatch}) {
       commit('setLoading', true)
       commit('clearError')
